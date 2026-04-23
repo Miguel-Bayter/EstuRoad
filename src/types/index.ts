@@ -38,6 +38,13 @@ export interface Carrera {
   stayVsLeave: { stay: string; leave: string };
   proyeccion2030: string;
   score?: number;
+  // Extended fields from real API
+  salarioMediana?: number;
+  tasaEmpleabilidad12m?: number;
+  habilidadesRequeridas?: string[];
+  tags?: string[];
+  acreditadaAltaCalidad?: boolean;
+  cineCode?: string;
 }
 
 export interface Perfil {
@@ -60,6 +67,12 @@ export interface Perfil {
   modalidad: 'presencial' | 'virtual' | 'hibrido' | '';
   internacional: string;
   completed: boolean;
+}
+
+export interface AuthUser {
+  publicId: string;
+  sessionToken: string;
+  ciudad: string;
 }
 
 export type Screen = 'landing' | 'onboarding' | 'results' | 'detail' | 'compare' | 'map';

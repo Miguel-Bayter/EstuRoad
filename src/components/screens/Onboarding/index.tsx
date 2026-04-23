@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../../../context/AppContext';
+import { authApi } from '../../../api';
 import { ProgressSteps } from '../../ui/ProgressSteps';
 import { StepOrigen } from './steps/StepOrigen';
 import { StepColegio } from './steps/StepColegio';
@@ -27,7 +28,7 @@ const STEP_COMPONENTS = [
 ];
 
 export function Onboarding() {
-  const { profile, setProfile, setScreen } = useApp();
+  const { profile, setProfile, setScreen, login } = useApp();
   const [step, setStep] = useState(0);
   const cur = STEPS[step];
   const StepComponent = STEP_COMPONENTS[step];
@@ -38,6 +39,9 @@ export function Onboarding() {
     } else {
       setProfile((p) => ({ ...p, completed: true }));
       setScreen('results');
+      authApi.create(profile)
+        .then((result) => login(authApi.toAuthUser(result)))
+        .catch(() => {});
     }
   }
 

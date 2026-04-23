@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { Perfil, Screen, TypeChoice, ViewChoice } from '../types';
+import type { Perfil, Screen, TypeChoice, ViewChoice, AuthUser } from '../types';
 import { DEFAULT_PERFIL } from '../data/constants';
 
 interface AppContextValue {
@@ -21,6 +21,9 @@ interface AppContextValue {
   setTypeChoice: (t: TypeChoice) => void;
   viewChoice: ViewChoice;
   setViewChoice: (v: ViewChoice) => void;
+  user: AuthUser | null;
+  login: (user: AuthUser) => void;
+  logout: () => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -44,12 +47,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [detailSlug, setDetailSlug] = useState('ing-sistemas');
   const [typeChoice, setTypeChoice] = useState<TypeChoice>('fraunces-geist');
   const [viewChoice, setViewChoice] = useState<ViewChoice>('cards');
+  const [user, setUser] = useState<AuthUser | null>(() =>
+    loadStorage<AuthUser | null>('er.user', null)
+  );
 
   const setScreen = useCallback((s: Screen) => setScreenRaw(s), []);
   const setProfile = useCallback(
     (p: Perfil | ((prev: Perfil) => Perfil)) => setProfileRaw(p),
     []
   );
+  const login = useCallback((u: AuthUser) => setUser(u), []);
+  const logout = useCallback(() => setUser(null), []);
 
   useEffect(() => {
     localStorage.setItem('er.screen', JSON.stringify(screen));
@@ -58,6 +66,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem('er.profile', JSON.stringify(profile));
   }, [profile]);
+
+  useEffect(() => {
+    localStorage.setItem('er.user', JSON.stringify(user));
+  }, [user]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-type', typeChoice);
@@ -75,8 +87,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setTypeChoice,
       viewChoice,
       setViewChoice,
+      user,
+      login,
+      logout,
     }),
-    [screen, setScreen, profile, setProfile, detailSlug, typeChoice, viewChoice]
+    [screen, setScreen, profile, setProfile, detailSlug, typeChoice, viewChoice, user, login, logout]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
