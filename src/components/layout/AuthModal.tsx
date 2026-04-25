@@ -6,6 +6,48 @@ interface AuthModalProps {
   onClose: () => void;
 }
 
+interface CodeRevealProps {
+  publicId: string;
+  onClose: () => void;
+}
+
+export function CodeRevealModal({ publicId, onClose }: CodeRevealProps) {
+  const [copied, setCopied] = useState(false);
+
+  function copy() {
+    navigator.clipboard.writeText(publicId).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  }
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3>Guarda tu código</h3>
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">✕</button>
+        </div>
+        <div className="modal-body">
+          <p className="modal-desc">
+            Este es tu <strong>código único</strong>. Guárdalo para recuperar tu perfil
+            y resultados desde cualquier dispositivo cuando quieras.
+          </p>
+          <div className="code-box">
+            <span className="code-box-text mono">{publicId}</span>
+            <button type="button" className="code-box-copy" onClick={copy}>
+              {copied ? '¡Copiado!' : 'Copiar'}
+            </button>
+          </div>
+          <button type="button" className="btn lime" style={{ width: '100%' }} onClick={onClose}>
+            Listo, lo guardé →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function AuthModal({ onClose }: AuthModalProps) {
   const { login, setScreen } = useApp();
   const [tab, setTab] = useState<'nueva' | 'recuperar'>('nueva');

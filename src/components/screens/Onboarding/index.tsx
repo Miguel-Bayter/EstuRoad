@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useApp } from '../../../context/AppContext';
 import { authApi } from '../../../api';
+import { CodeRevealModal } from '../../layout/AuthModal';
 import { ProgressSteps } from '../../ui/ProgressSteps';
 import { StepOrigen } from './steps/StepOrigen';
 import { StepColegio } from './steps/StepColegio';
@@ -30,6 +31,7 @@ const STEP_COMPONENTS = [
 export function Onboarding() {
   const { profile, setProfile, setScreen, login } = useApp();
   const [step, setStep] = useState(0);
+  const [codeToSave, setCodeToSave] = useState<string | null>(null);
   const cur = STEPS[step];
   const StepComponent = STEP_COMPONENTS[step];
 
@@ -40,7 +42,11 @@ export function Onboarding() {
       setProfile((p) => ({ ...p, completed: true }));
       setScreen('results');
       authApi.create(profile)
-        .then((result) => login(authApi.toAuthUser(result)))
+        .then((result) => {
+          const authUser = authApi.toAuthUser(result);
+          login(authUser);
+          setCodeToSave(authUser.publicId);
+        })
         .catch(() => {});
     }
   }
@@ -88,6 +94,9 @@ export function Onboarding() {
           )}
         </div>
       </div>
+      {codeToSave && (
+        <CodeRevealModal publicId={codeToSave} onClose={() => setCodeToSave(null)} />
+      )}
     </section>
   );
 }
