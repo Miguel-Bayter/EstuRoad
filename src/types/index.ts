@@ -71,7 +71,6 @@ export interface Perfil {
 
 export interface AuthUser {
   publicId: string;
-  sessionToken: string;
   ciudad: string;
 }
 

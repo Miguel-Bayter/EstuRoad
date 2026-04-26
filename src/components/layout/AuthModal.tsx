@@ -64,7 +64,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
     setError('');
     try {
       const perfil = await authApi.recover(id);
-      login({ publicId: perfil.publicId, sessionToken: '', ciudad: perfil.ciudad });
+      login({ publicId: perfil.publicId, ciudad: perfil.ciudad });
       onClose();
     } catch {
       setError('No encontramos ese código. Verifícalo e intenta de nuevo.');

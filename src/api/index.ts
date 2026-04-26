@@ -8,6 +8,7 @@ const BASE = import.meta.env.VITE_API_URL ?? '/api';
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     ...init,
   });
 
@@ -59,7 +60,7 @@ interface PerfilApiResponse {
 
 interface CreatePerfilResult {
   perfil: PerfilApiResponse;
-  sessionToken: string;
+  sessionToken?: string; // present on external API; local server uses httpOnly cookie instead
 }
 
 export const authApi = {
@@ -79,7 +80,6 @@ export const authApi = {
 
   toAuthUser: (result: CreatePerfilResult): AuthUser => ({
     publicId: result.perfil.publicId,
-    sessionToken: result.sessionToken,
     ciudad: result.perfil.ciudad,
   }),
 };
