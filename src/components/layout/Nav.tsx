@@ -1,13 +1,14 @@
 import { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
-import type { Screen } from '../../types';
 import { AuthModal } from './AuthModal';
 
 export function Nav() {
-  const { screen, setScreen, profile, user, logout } = useApp();
+  const { profile, user, logout } = useApp();
   const canResults = profile.completed;
   const [modalOpen, setModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
 
   function copyId() {
     if (!user) return;
@@ -17,34 +18,39 @@ export function Nav() {
     });
   }
 
-  const tabs: { id: Screen; label: string; locked?: boolean }[] = [
-    { id: 'landing', label: 'Inicio' },
-    { id: 'onboarding', label: 'Mi perfil' },
-    { id: 'results', label: 'Resultados', locked: !canResults },
-    { id: 'compare', label: 'Comparador', locked: !canResults },
-    { id: 'map', label: 'Mapa', locked: !canResults },
+  const tabs = [
+    { to: '/', label: 'Inicio', end: true },
+    { to: '/perfil', label: 'Mi perfil', end: false },
+    { to: '/resultados', label: 'Resultados', locked: !canResults, end: false },
+    { to: '/comparar', label: 'Comparador', locked: !canResults, end: false },
+    { to: '/mapa', label: 'Mapa', locked: !canResults, end: false },
   ];
 
   return (
     <>
       <nav className="nav">
         <div className="nav-left">
-          <div className="logo">
+          <div className="logo" role="link" tabIndex={0} onClick={() => navigate('/')} onKeyDown={(e) => e.key === 'Enter' && navigate('/')}>
             <div className="logo-mark">e</div>
             <span>EstuRoad</span>
           </div>
           <div className="nav-tabs">
-            {tabs.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                className={`nav-tab ${screen === t.id ? 'is-active' : ''}`}
-                disabled={t.locked}
-                onClick={() => !t.locked && setScreen(t.id)}
-              >
-                {t.label}
-              </button>
-            ))}
+            {tabs.map((t) =>
+              t.locked ? (
+                <span key={t.to} className="nav-tab" aria-disabled="true">
+                  {t.label}
+                </span>
+              ) : (
+                <NavLink
+                  key={t.to}
+                  to={t.to}
+                  end={t.end}
+                  className={({ isActive }) => `nav-tab${isActive ? ' is-active' : ''}`}
+                >
+                  {t.label}
+                </NavLink>
+              )
+            )}
           </div>
         </div>
         <div className="nav-right">
@@ -71,12 +77,7 @@ export function Nav() {
                   </svg>
                 )}
               </button>
-              <button
-                type="button"
-                className="session-exit"
-                title="Cerrar sesión"
-                onClick={logout}
-              >
+              <button type="button" className="session-exit" title="Cerrar sesión" onClick={logout}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                   <polyline points="16 17 21 12 16 7"/>

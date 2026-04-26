@@ -1,16 +1,19 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../../context/AppContext';
 import { useCarreras } from '../../../hooks/useCarreras';
 import { ColombiaMap } from '../../ui/ColombiaMap';
+import { Skeleton } from '../../ui/Skeleton';
 import type { Carrera } from '../../../types';
 
 export function MapFull() {
-  const { profile, setScreen, setDetailSlug } = useApp();
+  const { profile } = useApp();
   const { ranked, loading } = useCarreras(profile);
+  const navigate = useNavigate();
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const [hoverReg, setHoverReg] = useState<string | null>(null);
 
-  if (loading) return <div className="state-center"><div className="spinner" /></div>;
+  if (loading) return <div className="state-center"><Skeleton variant="hero" /></div>;
   if (!ranked.length) return null;
 
   const current: Carrera = ranked.find((c) => c.slug === activeSlug) ?? ranked[0];
@@ -32,7 +35,7 @@ export function MapFull() {
           <ColombiaMap highlights={hls} activeRegion={hoverReg} onHover={setHoverReg} height={520} />
           <div style={{ padding: '12px 6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span className="mono pl">Demanda por región · {current.nombre}</span>
-            <button type="button" className="btn sm" onClick={() => { setDetailSlug(current.slug); setScreen('detail'); }}>
+            <button type="button" className="btn sm" onClick={() => navigate(`/detalle/${current.slug}`)}>
               Ver detalle →
             </button>
           </div>

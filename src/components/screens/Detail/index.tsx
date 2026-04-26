@@ -1,26 +1,31 @@
 import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../../../context/AppContext';
 import { Spark } from '../../ui/Spark';
+import { Skeleton } from '../../ui/Skeleton';
 import { carrerasApi } from '../../../api';
 import { scoreCarrera } from '../../../utils/scoring';
 import { formatCOP } from '../../../utils/format';
 import type { Carrera } from '../../../types';
 
 export function Detail() {
-  const { detailSlug, profile, setScreen } = useApp();
+  const { slug } = useParams<{ slug: string }>();
+  const { profile } = useApp();
+  const navigate = useNavigate();
   const [carrera, setCarrera] = useState<Carrera | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!slug) return;
     setLoading(true);
-    carrerasApi.get(detailSlug)
+    carrerasApi.get(slug)
       .then(setCarrera)
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [detailSlug]);
+  }, [slug]);
 
-  if (loading) return <div className="state-center"><div className="spinner" /></div>;
+  if (loading) return <div className="state-center"><Skeleton variant="hero" /></div>;
   if (error || !carrera) return <div className="state-center"><p style={{ color: 'var(--terra)' }}>Error al cargar carrera.</p></div>;
 
   const score = scoreCarrera(carrera, profile);
@@ -38,7 +43,7 @@ export function Detail() {
 
   return (
     <section>
-      <button type="button" className="btn sm ghost" onClick={() => setScreen('results')} style={{ marginBottom: 14 }}>
+      <button type="button" className="btn sm ghost" onClick={() => navigate('/resultados')} style={{ marginBottom: 14 }}>
         ← Volver a resultados
       </button>
 

@@ -75,7 +75,5 @@ export interface AuthUser {
   ciudad: string;
 }
 
-export type Screen = 'landing' | 'onboarding' | 'results' | 'detail' | 'compare' | 'map';
-
 export type TypeChoice = 'fraunces-geist' | 'serif-editorial' | 'grotesk' | 'dm-geist';
 export type ViewChoice = 'list' | 'cards' | 'map';

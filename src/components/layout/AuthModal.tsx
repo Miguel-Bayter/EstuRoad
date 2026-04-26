@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { authApi } from '../../api';
 
@@ -49,7 +50,8 @@ export function CodeRevealModal({ publicId, onClose }: CodeRevealProps) {
 }
 
 export function AuthModal({ onClose }: AuthModalProps) {
-  const { login, setScreen } = useApp();
+  const { login } = useApp();
+  const navigate = useNavigate();
   const [tab, setTab] = useState<'nueva' | 'recuperar'>('nueva');
   const [publicId, setPublicId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -106,7 +108,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
               type="button"
               className="btn lime"
               style={{ width: '100%' }}
-              onClick={() => { onClose(); setScreen('onboarding'); }}
+              onClick={() => { onClose(); navigate('/perfil'); }}
             >
               Empezar cuestionario →
             </button>

@@ -1,19 +1,29 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../../context/AppContext';
 import { useCarreras } from '../../../hooks/useCarreras';
 import { Chip } from '../../ui/Chip';
 import { Spark } from '../../ui/Spark';
 import { ColombiaMap } from '../../ui/ColombiaMap';
+import { Skeleton } from '../../ui/Skeleton';
 import { RIASEC } from '../../../data/constants';
 import { formatCOP } from '../../../utils/format';
 import type { Carrera } from '../../../types';
 
 export function Results() {
-  const { profile, setScreen, setDetailSlug, viewChoice } = useApp();
+  const { profile, viewChoice } = useApp();
   const { ranked, loading, error } = useCarreras(profile);
   const [filter, setFilter] = useState<'todas' | 'univ' | 'tec' | 'locales'>('todas');
+  const navigate = useNavigate();
 
-  if (loading) return <div className="state-center"><div className="spinner" /><p>Cargando carreras…</p></div>;
+  if (loading) return (
+    <div className="dash">
+      <div className="dash-main">
+        <Skeleton variant="hero" />
+        <Skeleton variant="row" count={5} />
+      </div>
+    </div>
+  );
   if (error) return <div className="state-center"><p style={{ color: 'var(--terra)' }}>Error: {error}</p></div>;
   if (!ranked.length) return null;
 
@@ -29,7 +39,7 @@ export function Results() {
     <section>
       <div className="dash">
         <div className="dash-main">
-          <DashHero top={top} setScreen={setScreen} setDetailSlug={setDetailSlug} />
+          <DashHero top={top} navigate={navigate} />
 
           <div className="filter-row">
             <div className="chips" style={{ flex: 1 }}>
@@ -44,13 +54,13 @@ export function Results() {
             </div>
           </div>
 
-          {viewChoice === 'list' && <MatchList items={filtered} setScreen={setScreen} setDetailSlug={setDetailSlug} />}
-          {viewChoice === 'cards' && <MatchCards items={filtered} setScreen={setScreen} setDetailSlug={setDetailSlug} />}
-          {viewChoice === 'map' && <MapView ranked={filtered} profile={profile} setScreen={setScreen} setDetailSlug={setDetailSlug} />}
+          {viewChoice === 'list' && <MatchList items={filtered} navigate={navigate} />}
+          {viewChoice === 'cards' && <MatchCards items={filtered} navigate={navigate} />}
+          {viewChoice === 'map' && <MapView ranked={filtered} profile={profile} navigate={navigate} />}
         </div>
 
         <aside className="side-stack">
-          <ProfileCard profile={profile} setScreen={setScreen} />
+          <ProfileCard profile={profile} navigate={navigate} />
           <RiasecCard riasec={profile.riasec} />
           <DecisionCard profile={profile} />
           <DemandaCard regionId={profile.regionId} />
@@ -62,7 +72,7 @@ export function Results() {
 
 // ---- Sub-components ----
 
-function DashHero({ top, setScreen, setDetailSlug }: { top: Carrera; setScreen: (s: any) => void; setDetailSlug: (s: string) => void }) {
+function DashHero({ top, navigate }: { top: Carrera; navigate: ReturnType<typeof useNavigate> }) {
   return (
     <div className="dash-hero">
       <div style={{ position: 'relative', zIndex: 1 }}>
@@ -78,10 +88,10 @@ function DashHero({ top, setScreen, setDetailSlug }: { top: Carrera; setScreen: 
           <div className="kpi"><div className="kpi-num">{top.empleabilidad}%</div><div className="kpi-lbl">Empleabilidad</div></div>
         </div>
         <div style={{ marginTop: 18, display: 'flex', gap: 10 }}>
-          <button type="button" className="btn lime" onClick={() => { setDetailSlug(top.slug); setScreen('detail'); }}>
+          <button type="button" className="btn lime" onClick={() => navigate(`/detalle/${top.slug}`)}>
             Ver detalle completo →
           </button>
-          <button type="button" className="btn ghost" style={{ color: 'var(--paper)', borderColor: 'var(--paper)' }} onClick={() => setScreen('compare')}>
+          <button type="button" className="btn ghost" style={{ color: 'var(--paper)', borderColor: 'var(--paper)' }} onClick={() => navigate('/comparar')}>
             Comparar con otras
           </button>
         </div>
@@ -95,11 +105,11 @@ function DashHero({ top, setScreen, setDetailSlug }: { top: Carrera; setScreen: 
   );
 }
 
-function MatchList({ items, setScreen, setDetailSlug }: { items: Carrera[]; setScreen: (s: any) => void; setDetailSlug: (s: string) => void }) {
+function MatchList({ items, navigate }: { items: Carrera[]; navigate: ReturnType<typeof useNavigate> }) {
   return (
     <div className="match-list">
       {items.map((c) => (
-        <div key={c.slug} className="match-row" onClick={() => { setDetailSlug(c.slug); setScreen('detail'); }}>
+        <div key={c.slug} className="match-row" onClick={() => navigate(`/detalle/${c.slug}`)}>
           <div className="match-score" style={{ '--v': c.score } as React.CSSProperties}><span>{c.score}</span></div>
           <div>
             <div className="match-title">{c.nombre}</div>
@@ -124,11 +134,11 @@ function MatchList({ items, setScreen, setDetailSlug }: { items: Carrera[]; setS
   );
 }
 
-function MatchCards({ items, setScreen, setDetailSlug }: { items: Carrera[]; setScreen: (s: any) => void; setDetailSlug: (s: string) => void }) {
+function MatchCards({ items, navigate }: { items: Carrera[]; navigate: ReturnType<typeof useNavigate> }) {
   return (
     <div className="match-cards">
       {items.map((c, i) => (
-        <div key={c.slug} className="match-card" onClick={() => { setDetailSlug(c.slug); setScreen('detail'); }}>
+        <div key={c.slug} className="match-card" onClick={() => navigate(`/detalle/${c.slug}`)}>
           <div className="rank">#{String(i + 1).padStart(2, '0')}</div>
           <div className="match-score" style={{ '--v': c.score, width: 52, height: 52 } as React.CSSProperties}><span>{c.score}</span></div>
           <h4>{c.nombre}</h4>
@@ -145,7 +155,7 @@ function MatchCards({ items, setScreen, setDetailSlug }: { items: Carrera[]; set
   );
 }
 
-function MapView({ ranked, profile, setScreen, setDetailSlug }: any) {
+function MapView({ ranked, navigate }: any) {
   const [activeSlug, setActiveSlug] = useState(ranked[0]?.slug);
   const [hoverReg, setHoverReg] = useState<string | null>(null);
   const carrera: Carrera = ranked.find((c: Carrera) => c.slug === activeSlug) ?? ranked[0];
@@ -159,7 +169,7 @@ function MapView({ ranked, profile, setScreen, setDetailSlug }: any) {
         <ColombiaMap highlights={hls} activeRegion={hoverReg} onHover={setHoverReg} />
         <div style={{ padding: '12px 6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span className="mono pl">Demanda por región · {carrera.nombre}</span>
-          <button type="button" className="btn sm" onClick={() => { setDetailSlug(carrera.slug); setScreen('detail'); }}>Ver detalle →</button>
+          <button type="button" className="btn sm" onClick={() => navigate(`/detalle/${carrera.slug}`)}>Ver detalle →</button>
         </div>
       </div>
       <div className="map-legend">
@@ -176,14 +186,14 @@ function MapView({ ranked, profile, setScreen, setDetailSlug }: any) {
   );
 }
 
-function ProfileCard({ profile, setScreen }: any) {
+function ProfileCard({ profile, navigate }: any) {
   return (
     <div className="side-card">
       <h5>Tu perfil</h5>
       {[['Ciudad', profile.ciudad], ['Estrato', profile.estrato], ['Presupuesto', profile.presupuesto === 0 ? 'Solo pública' : `$${(profile.presupuesto / 1e6).toFixed(1)}M`], ['Mudarse', `${profile.mudarse}%`]].map(([l, v]) => (
         <div key={String(l)} className="mini-kpi"><span className="l">{l}</span><span className="v">{v}</span></div>
       ))}
-      <button type="button" className="btn sm ghost" style={{ marginTop: 10, width: '100%', justifyContent: 'center' }} onClick={() => setScreen('onboarding')}>Editar perfil</button>
+      <button type="button" className="btn sm ghost" style={{ marginTop: 10, width: '100%', justifyContent: 'center' }} onClick={() => navigate('/perfil')}>Editar perfil</button>
     </div>
   );
 }

@@ -1,13 +1,16 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../../context/AppContext';
 import { useCarreras } from '../../../hooks/useCarreras';
+import { Skeleton } from '../../ui/Skeleton';
 import { formatCOP } from '../../../utils/format';
 import type { Carrera } from '../../../types';
 
 export function Compare() {
-  const { profile, setScreen, setDetailSlug } = useApp();
+  const { profile } = useApp();
   const { ranked, loading } = useCarreras(profile);
   const [selected, setSelected] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const initialSelected = useMemo(() => ranked.slice(0, 3).map((c) => c.slug), [ranked]);
   const ids = selected.length === 3 ? selected : initialSelected;
@@ -18,7 +21,7 @@ export function Compare() {
     setSelected(base);
   }
 
-  if (loading) return <div className="state-center"><div className="spinner" /></div>;
+  if (loading) return <div className="state-center"><Skeleton variant="hero" /></div>;
   if (!ranked.length) return null;
 
   const carreras = ids.map((slug) => ranked.find((c) => c.slug === slug)!).filter(Boolean);
@@ -74,7 +77,7 @@ export function Compare() {
         <div className="compare-cell head">&nbsp;</div>
         {carreras.map((c) => (
           <div key={`cta-${c.slug}`} className="compare-cell">
-            <button type="button" className="btn sm" onClick={() => { setDetailSlug(c.slug); setScreen('detail'); }}>Ver detalle →</button>
+            <button type="button" className="btn sm" onClick={() => navigate(`/detalle/${c.slug}`)}>Ver detalle →</button>
           </div>
         ))}
       </div>

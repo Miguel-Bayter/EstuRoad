@@ -1,7 +1,7 @@
-import { useApp } from '../../../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 
 export function Landing() {
-  const { setScreen } = useApp();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -20,7 +20,7 @@ export function Landing() {
             EstuRoad te ayuda a descubrir qué estudiar considerando de dónde vienes, qué te mueve y qué oportunidades reales tienes —quedándote o migrando— en Colombia.
           </p>
           <div className="hero-actions">
-            <button type="button" className="btn lime" onClick={() => setScreen('onboarding')}>
+            <button type="button" className="btn lime" onClick={() => navigate('/perfil')}>
               Empezar test gratuito →
             </button>
             <button type="button" className="btn ghost">Ver demo (2 min)</button>
@@ -124,7 +124,7 @@ export function Landing() {
                 Responde 20 preguntas y en 8 minutos tendrás un perfil con tus 5 mejores caminos, detalle por carrera, costos y un mapa de oportunidades en Colombia.
               </p>
               <div style={{ marginTop: 22, display: 'flex', gap: 12 }}>
-                <button type="button" className="btn lime" onClick={() => setScreen('onboarding')}>Hacer el test →</button>
+                <button type="button" className="btn lime" onClick={() => navigate('/perfil')}>Hacer el test →</button>
                 <button type="button" className="btn ghost" style={{ borderColor: 'var(--paper)', color: 'var(--paper)' }}>Soy orientador</button>
               </div>
             </div>

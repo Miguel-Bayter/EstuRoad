@@ -11,13 +11,20 @@ interface UseCarrerasResult {
   refetch: () => void;
 }
 
+let carrerasCache: Carrera[] | null = null;
+
 export function useCarreras(perfil: Perfil): UseCarrerasResult {
-  const [carreras, setCarreras] = useState<Carrera[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [carreras, setCarreras] = useState<Carrera[]>(() => carrerasCache ?? []);
+  const [loading, setLoading] = useState(carrerasCache === null);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const fetch = useCallback(() => {
+    if (carrerasCache) {
+      setCarreras(carrerasCache);
+      setLoading(false);
+      return;
+    }
     abortRef.current?.abort();
     abortRef.current = new AbortController();
     setLoading(true);
@@ -25,7 +32,10 @@ export function useCarreras(perfil: Perfil): UseCarrerasResult {
 
     carrerasApi
       .list()
-      .then(setCarreras)
+      .then((data) => {
+        carrerasCache = data;
+        setCarreras(data);
+      })
       .catch((err: Error) => {
         if (err.name !== 'AbortError') setError(err.message);
       })

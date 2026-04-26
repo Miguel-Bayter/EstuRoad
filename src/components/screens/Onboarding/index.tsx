@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../../context/AppContext';
 import { authApi } from '../../../api';
 import { CodeRevealModal } from '../../layout/AuthModal';
@@ -29,7 +30,8 @@ const STEP_COMPONENTS = [
 ];
 
 export function Onboarding() {
-  const { profile, setProfile, setScreen, login } = useApp();
+  const { profile, setProfile, login } = useApp();
+  const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [codeToSave, setCodeToSave] = useState<string | null>(null);
   const cur = STEPS[step];
@@ -40,7 +42,7 @@ export function Onboarding() {
       setStep(step + 1);
     } else {
       setProfile((p) => ({ ...p, completed: true }));
-      setScreen('results');
+      navigate('/resultados');
       authApi.create(profile)
         .then((result) => {
           const authUser = authApi.toAuthUser(result);
