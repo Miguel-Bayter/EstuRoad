@@ -21,11 +21,9 @@ export function StepColegio({ profile, setProfile }: Props) {
           value={profile.promedio}
           onChange={(e) => setProfile((p) => ({ ...p, promedio: parseFloat(e.target.value) }))}
         />
-        <div style={{ marginTop: 10, fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 32 }}>
-          {profile.promedio.toFixed(1)}
-        </div>
+        <div className="saber-display">{profile.promedio.toFixed(1)}</div>
       </div>
-      <div className="field" style={{ gridColumn: 'span 2' }}>
+      <div className="field span-2">
         <label className="field-label">Resultado Saber 11 (opcional)</label>
         <div className="chips">
           {['No lo he presentado','Menos de 250','250–299','300–349','350–399','400+'].map((r) => (

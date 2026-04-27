@@ -20,9 +20,7 @@ export function StepIntereses({ profile, setProfile }: Props) {
           </Chip>
         ))}
       </div>
-      <p style={{ marginTop: 18, fontSize: 12, color: 'var(--ink-2)' }}>
-        {profile.intereses.length} seleccionados · mínimo 3
-      </p>
+      <p className="step-hint">{profile.intereses.length} seleccionados · mínimo 3</p>
     </div>
   );
 }

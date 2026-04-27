@@ -61,7 +61,7 @@ export function ColombiaMap({
         return (
           <g
             key={id}
-            style={{ cursor: 'pointer' }}
+            className="map-region"
             onMouseEnter={() => onHover?.(id)}
             onMouseLeave={() => onHover?.(null)}
             onClick={() => onSelect?.(id)}
@@ -74,7 +74,7 @@ export function ColombiaMap({
               fontFamily="var(--font-mono)"
               fontSize="10"
               fill="var(--ink-2)"
-              style={{ textTransform: 'uppercase', letterSpacing: '0.08em' }}
+              className="map-label"
             >
               {info.label}
             </text>

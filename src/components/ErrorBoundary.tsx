@@ -17,9 +17,9 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="state-center" style={{ flexDirection: 'column', gap: 16, textAlign: 'center' }}>
+        <div className="state-center">
           <h2>Algo salió mal</h2>
-          <p style={{ color: 'var(--ink-2)', maxWidth: '40ch' }}>
+          <p>
             Ocurrió un error inesperado. Intenta volver al inicio.
           </p>
           <button

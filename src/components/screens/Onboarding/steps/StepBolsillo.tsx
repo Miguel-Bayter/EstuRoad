@@ -13,14 +13,14 @@ export function StepBolsillo({ profile, setProfile }: Props) {
           value={profile.presupuesto}
           onChange={(e) => setProfile((p) => ({ ...p, presupuesto: parseInt(e.target.value) }))}
         />
-        <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 42 }}>
+        <div className="budget-display">
+          <div className="budget-amount">
             {profile.presupuesto === 0 ? 'Solo pública' : `$${(profile.presupuesto / 1e6).toFixed(1)}M / sem`}
           </div>
           <span className="mono pl">COP · por semestre</span>
         </div>
       </div>
-      <div className="grid-2" style={{ marginTop: 14 }}>
+      <div className="grid-2 grid-2--mt">
         <div className="field">
           <label className="field-label">¿Considerarías crédito ICETEX?</label>
           <div className="chips">

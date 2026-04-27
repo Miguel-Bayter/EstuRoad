@@ -25,7 +25,7 @@ export function MapFull() {
 
   return (
     <section>
-      <div className="section-head" style={{ marginTop: 20 }}>
+      <div className="section-head section-head--mt">
         <h2>Dónde está el trabajo<br />para cada carrera.</h2>
         <p className="section-lede">Interactivo. Hazle hover a una región para ver demanda; cambia la carrera a la derecha.</p>
       </div>
@@ -33,7 +33,7 @@ export function MapFull() {
       <div className="match-map">
         <div>
           <ColombiaMap highlights={hls} activeRegion={hoverReg} onHover={setHoverReg} height={520} />
-          <div style={{ padding: '12px 6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="map-footer">
             <span className="mono pl">Demanda por región · {current.nombre}</span>
             <button type="button" className="btn sm" onClick={() => navigate(`/detalle/${current.slug}`)}>
               Ver detalle →
@@ -41,7 +41,7 @@ export function MapFull() {
           </div>
         </div>
         <div className="map-legend">
-          <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 22, marginBottom: 14 }}>Cambia la carrera</h4>
+          <h4 className="map-legend-title">Cambia la carrera</h4>
           {ranked.slice(0, 10).map((c) => (
             <div
               key={c.slug}
@@ -51,7 +51,7 @@ export function MapFull() {
               <span className="d" />
               <div>
                 <div className="t">{c.nombre}</div>
-                <div style={{ fontSize: 11, opacity: .7, marginTop: 2 }}>{c.tipo}</div>
+                <div className="map-legend-sub">{c.tipo}</div>
               </div>
               <span className="n">{c.score}</span>
             </div>

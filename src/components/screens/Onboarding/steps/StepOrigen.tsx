@@ -32,7 +32,7 @@ export function StepOrigen({ profile, setProfile }: Props) {
           ))}
         </div>
       </div>
-      <div className="field" style={{ gridColumn: 'span 2' }}>
+      <div className="field span-2">
         <label className="field-label">¿Qué grado cursas?</label>
         <div className="chips">
           {['Grado 10','Grado 11','Bachiller graduado','Estudiante universitario (cambio)','Otro'].map((g) => (

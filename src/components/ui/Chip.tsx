@@ -12,7 +12,7 @@ export function Chip({ active = false, onClick, variant = '', children }: ChipPr
       className={`chip ${variant} ${active ? 'is-active' : ''}`}
       onClick={onClick}
     >
-      {active && <span style={{ fontSize: 10 }}>✓</span>}
+      {active && <span className="chip-check">✓</span>}
       {children}
     </button>
   );

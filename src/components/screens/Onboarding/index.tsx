@@ -68,8 +68,8 @@ export function Onboarding() {
             </div>
           </div>
         ))}
-        <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--paper-2)', borderRadius: 10, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.5 }}>
-          <strong style={{ color: 'var(--ink)' }}>Privacidad:</strong> tus datos nunca se venden ni se comparten con universidades sin tu permiso.
+        <div className="privacy-note">
+          <strong>Privacidad:</strong> tus datos nunca se venden ni se comparten con universidades sin tu permiso.
         </div>
       </aside>
 
@@ -77,7 +77,7 @@ export function Onboarding() {
         <div className="card-header">
           <div>
             <span className="mono pl">Paso {String(step + 1).padStart(2, '0')} · {Math.round((step / (STEPS.length - 1)) * 100)}%</span>
-            <h3 style={{ marginTop: 10 }}>{cur.title}</h3>
+            <h3>{cur.title}</h3>
             <p className="card-lede">{cur.sub}</p>
           </div>
           <ProgressSteps total={STEPS.length} current={step + 1} />

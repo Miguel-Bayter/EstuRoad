@@ -40,7 +40,7 @@ export function CodeRevealModal({ publicId, onClose }: CodeRevealProps) {
               {copied ? '¡Copiado!' : 'Copiar'}
             </button>
           </div>
-          <button type="button" className="btn lime" style={{ width: '100%' }} onClick={onClose}>
+          <button type="button" className="btn lime full" onClick={onClose}>
             Listo, lo guardé →
           </button>
         </div>
@@ -106,8 +106,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
             </p>
             <button
               type="button"
-              className="btn lime"
-              style={{ width: '100%' }}
+              className="btn lime full"
               onClick={() => { onClose(); navigate('/perfil'); }}
             >
               Empezar cuestionario →
@@ -128,8 +127,7 @@ export function AuthModal({ onClose }: AuthModalProps) {
             {error && <p className="modal-error">{error}</p>}
             <button
               type="button"
-              className="btn"
-              style={{ width: '100%' }}
+              className="btn full"
               disabled={loading || !publicId.trim()}
               onClick={handleRecover}
             >

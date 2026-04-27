@@ -8,7 +8,7 @@ export function Landing() {
       <section className="hero">
         <div>
           <span className="hero-eyebrow">
-            <span style={{ width: 6, height: 6, borderRadius: 99, background: 'var(--green)', display: 'inline-block' }} />
+            <span className="hero-eyebrow-dot" />
             Plataforma en beta · Colombia 2026
           </span>
           <h1>
@@ -48,15 +48,15 @@ export function Landing() {
           </div>
           <div className="hv-map">
             <div className="hv-dots">
-              <div className="hv-pin" style={{ top: '18%', left: '48%' }} />
-              <div className="hv-pin lime" style={{ top: '38%', left: '52%' }} />
-              <div className="hv-pin green" style={{ top: '55%', left: '38%' }} />
-              <div className="hv-pin" style={{ top: '42%', left: '72%' }} />
-              <div className="hv-pin green" style={{ top: '28%', left: '58%' }} />
-              <div className="hv-pin lime" style={{ top: '72%', left: '54%' }} />
-              <div className="hv-pin line" style={{ top: '20%', left: '60%' }}>Barranquilla · +84</div>
-              <div className="hv-pin line" style={{ top: '48%', left: '30%' }}>Cali · +62</div>
-              <div className="hv-pin line" style={{ top: '62%', left: '64%' }}>Villao · +38</div>
+              <div className="hv-pin" style={{ '--pin-top': '18%', '--pin-left': '48%' } as React.CSSProperties} />
+              <div className="hv-pin lime" style={{ '--pin-top': '38%', '--pin-left': '52%' } as React.CSSProperties} />
+              <div className="hv-pin green" style={{ '--pin-top': '55%', '--pin-left': '38%' } as React.CSSProperties} />
+              <div className="hv-pin" style={{ '--pin-top': '42%', '--pin-left': '72%' } as React.CSSProperties} />
+              <div className="hv-pin green" style={{ '--pin-top': '28%', '--pin-left': '58%' } as React.CSSProperties} />
+              <div className="hv-pin lime" style={{ '--pin-top': '72%', '--pin-left': '54%' } as React.CSSProperties} />
+              <div className="hv-pin line" style={{ '--pin-top': '20%', '--pin-left': '60%' } as React.CSSProperties}>Barranquilla · +84</div>
+              <div className="hv-pin line" style={{ '--pin-top': '48%', '--pin-left': '30%' } as React.CSSProperties}>Cali · +62</div>
+              <div className="hv-pin line" style={{ '--pin-top': '62%', '--pin-left': '64%' } as React.CSSProperties}>Villao · +38</div>
             </div>
           </div>
           <div className="hv-bottom">
@@ -81,7 +81,7 @@ export function Landing() {
         </div>
         <div className="why">
           <div className="why-card span-5 dark">
-            <span className="mono" style={{ opacity: .6 }}>01 · Diferencial</span>
+            <span className="mono dim">01 · Diferencial</span>
             <h3>Quedarte en tu ciudad<br />también es una opción.</h3>
             <p>Para cada carrera te mostramos oportunidades en tu región antes de asumir que tienes que migrar a Bogotá o Medellín.</p>
           </div>
@@ -100,7 +100,7 @@ export function Landing() {
             <p>No es lo mismo ganar $5M en Bogotá que en Quibdó. Lo tenemos en cuenta.</p>
           </div>
           <div className="why-card span-4 green">
-            <span className="mono" style={{ opacity: .7 }}>05</span>
+            <span className="mono dim-7">05</span>
             <h3>Técnicas y<br />tecnológicas<br />también cuentan.</h3>
             <p>Rutas cortas del SENA y politécnicos con salarios competitivos.</p>
           </div>
@@ -113,22 +113,22 @@ export function Landing() {
       </section>
 
       <section className="section">
-        <div className="card" style={{ background: 'var(--ink)', color: 'var(--paper)', border: 0 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 30, alignItems: 'center' }}>
+        <div className="card dark">
+          <div className="cta-grid">
             <div>
-              <span className="mono" style={{ opacity: .6 }}>Empieza ahora · gratis</span>
-              <h2 style={{ fontSize: 'clamp(40px,5vw,72px)', marginTop: 14, fontStyle: 'italic' }}>
+              <span className="mono dim">Empieza ahora · gratis</span>
+              <h2 className="cta-h2">
                 ¿Vale la pena<br />quedarme o irme?
               </h2>
-              <p style={{ marginTop: 14, maxWidth: '50ch', opacity: .75, fontSize: 16, lineHeight: 1.55 }}>
+              <p className="cta-body">
                 Responde 20 preguntas y en 8 minutos tendrás un perfil con tus 5 mejores caminos, detalle por carrera, costos y un mapa de oportunidades en Colombia.
               </p>
-              <div style={{ marginTop: 22, display: 'flex', gap: 12 }}>
+              <div className="cta-actions">
                 <button type="button" className="btn lime" onClick={() => navigate('/perfil')}>Hacer el test →</button>
-                <button type="button" className="btn ghost" style={{ borderColor: 'var(--paper)', color: 'var(--paper)' }}>Soy orientador</button>
+                <button type="button" className="btn ghost light">Soy orientador</button>
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div className="cta-steps">
               {[
                 ['1. Sobre ti', 'Ciudad, colegio, estrato, presupuesto'],
                 ['2. Tus notas', 'Materias fuertes y Saber 11 (opcional)'],
@@ -136,11 +136,11 @@ export function Landing() {
                 ['4. Tus posibilidades', 'Disposición a mudarte, tiempo, prioridades'],
                 ['5. Resultados', 'Tus 5 matches + mapa + detalle'],
               ].map(([title, sub], i) => (
-                <div key={i} style={{ display: 'flex', gap: 14, padding: '14px 16px', background: 'rgba(245,241,232,.06)', borderRadius: 12 }}>
-                  <strong style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 22, width: 26, color: 'var(--lime)' }}>0{i + 1}</strong>
+                <div key={i} className="step-item">
+                  <strong className="step-item-num">0{i + 1}</strong>
                   <div>
-                    <div style={{ fontWeight: 500, fontSize: 14 }}>{title}</div>
-                    <div style={{ fontSize: 12, opacity: .65, marginTop: 2 }}>{sub}</div>
+                    <div className="step-item-title">{title}</div>
+                    <div className="step-item-sub">{sub}</div>
                   </div>
                 </div>
               ))}
@@ -149,9 +149,9 @@ export function Landing() {
         </div>
       </section>
 
-      <footer style={{ marginTop: 60, paddingTop: 24, borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--ink-2)' }}>
+      <footer className="site-footer">
         <div>EstuRoad · demo de producto · datos ficticios con fines ilustrativos</div>
-        <div style={{ display: 'flex', gap: 18 }}>
+        <div className="site-footer-links">
           {['Metodología','Privacidad','Para colegios','Contacto'].map((l) => <span key={l}>{l}</span>)}
         </div>
       </footer>

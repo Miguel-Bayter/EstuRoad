@@ -20,9 +20,7 @@ export function StepHabilidades({ profile, setProfile }: Props) {
           </Chip>
         ))}
       </div>
-      <p style={{ marginTop: 18, fontSize: 12, color: 'var(--ink-2)' }}>
-        Máximo 5 · escogidas: {profile.habilidades.length}
-      </p>
+      <p className="step-hint">Máximo 5 · escogidas: {profile.habilidades.length}</p>
     </div>
   );
 }
