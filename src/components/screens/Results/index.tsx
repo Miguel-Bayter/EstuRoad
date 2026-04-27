@@ -42,7 +42,7 @@ export function Results() {
           <DashHero top={top} navigate={navigate} />
 
           <div className="filter-row">
-            <div className="chips">
+            <div className="chips" role="group" aria-label="Filtrar por tipo de carrera">
               {([
                 ['todas', `Todas (${ranked.length})`],
                 ['univ', 'Universitarias'],

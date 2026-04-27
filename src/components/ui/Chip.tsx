@@ -11,6 +11,7 @@ export function Chip({ active = false, onClick, variant = '', children }: ChipPr
       type="button"
       className={`chip ${variant} ${active ? 'is-active' : ''}`}
       onClick={onClick}
+      aria-pressed={active}
     >
       {active && <span className="chip-check">✓</span>}
       {children}

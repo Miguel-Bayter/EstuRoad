@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { authApi } from '../../api';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 interface AuthModalProps {
   onClose: () => void;
@@ -14,6 +15,8 @@ interface CodeRevealProps {
 
 export function CodeRevealModal({ publicId, onClose }: CodeRevealProps) {
   const [copied, setCopied] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, onClose);
 
   function copy() {
     navigator.clipboard.writeText(publicId).then(() => {
@@ -24,9 +27,16 @@ export function CodeRevealModal({ publicId, onClose }: CodeRevealProps) {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={modalRef}
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="code-reveal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
-          <h3>Guarda tu código</h3>
+          <h3 id="code-reveal-title">Guarda tu código</h3>
           <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">✕</button>
         </div>
         <div className="modal-body">
@@ -56,6 +66,8 @@ export function AuthModal({ onClose }: AuthModalProps) {
   const [publicId, setPublicId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, onClose);
 
   async function handleRecover() {
     const id = publicId.trim();
@@ -75,9 +87,16 @@ export function AuthModal({ onClose }: AuthModalProps) {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={modalRef}
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-modal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
-          <h3>Tu sesión en EstuRoad</h3>
+          <h3 id="auth-modal-title">Tu sesión en EstuRoad</h3>
           <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">✕</button>
         </div>
 
@@ -122,9 +141,8 @@ export function AuthModal({ onClose }: AuthModalProps) {
               value={publicId}
               onChange={(e) => { setPublicId(e.target.value); setError(''); }}
               onKeyDown={(e) => e.key === 'Enter' && handleRecover()}
-              autoFocus
             />
-            {error && <p className="modal-error">{error}</p>}
+            {error && <p className="modal-error" role="alert">{error}</p>}
             <button
               type="button"
               className="btn full"

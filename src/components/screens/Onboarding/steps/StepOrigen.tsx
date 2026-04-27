@@ -8,8 +8,9 @@ export function StepOrigen({ profile, setProfile }: Props) {
   return (
     <div className="grid-2">
       <div className="field">
-        <label className="field-label">Ciudad / municipio</label>
+        <label className="field-label" htmlFor="ciudad-select">Ciudad / municipio</label>
         <select
+          id="ciudad-select"
           className="select"
           value={profile.ciudad}
           onChange={(e) => {

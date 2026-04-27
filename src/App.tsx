@@ -15,18 +15,23 @@ import './styles/index.css';
 function AppShell() {
   return (
     <div className="shell">
-      <Nav />
-      <ErrorBoundary>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/perfil" element={<Onboarding />} />
-          <Route path="/resultados" element={<Results />} />
-          <Route path="/detalle/:slug" element={<Detail />} />
-          <Route path="/comparar" element={<Compare />} />
-          <Route path="/mapa" element={<MapFull />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </ErrorBoundary>
+      <a href="#main-content" className="skip-link">Saltar al contenido principal</a>
+      <header role="banner">
+        <Nav />
+      </header>
+      <main id="main-content">
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/perfil" element={<Onboarding />} />
+            <Route path="/resultados" element={<Results />} />
+            <Route path="/detalle/:slug" element={<Detail />} />
+            <Route path="/comparar" element={<Compare />} />
+            <Route path="/mapa" element={<MapFull />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
+      </main>
       <TweaksPanel />
     </div>
   );

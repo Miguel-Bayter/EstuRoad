@@ -15,8 +15,9 @@ export function StepColegio({ profile, setProfile }: Props) {
         </div>
       </div>
       <div className="field">
-        <label className="field-label">Promedio aproximado (1.0 – 5.0)</label>
+        <label className="field-label" htmlFor="promedio-slider">Promedio aproximado (1.0 – 5.0)</label>
         <input
+          id="promedio-slider"
           type="range" className="slider" min="1" max="5" step="0.1"
           value={profile.promedio}
           onChange={(e) => setProfile((p) => ({ ...p, promedio: parseFloat(e.target.value) }))}

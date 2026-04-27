@@ -52,7 +52,7 @@ export function Compare() {
       <div className="compare-controls">
         <span className="mono pl">Cambia una carrera:</span>
         {ids.map((id, i) => (
-          <select key={i} className="select sm" value={id} onChange={(e) => swap(i, e.target.value)}>
+          <select key={i} className="select sm" aria-label={`Carrera ${i + 1}`} value={id} onChange={(e) => swap(i, e.target.value)}>
             {ranked.map((r) => <option key={r.slug} value={r.slug}>{r.nombre}</option>)}
           </select>
         ))}

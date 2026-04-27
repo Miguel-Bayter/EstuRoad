@@ -149,7 +149,7 @@ export function Landing() {
         </div>
       </section>
 
-      <footer className="site-footer">
+      <footer className="site-footer" role="contentinfo">
         <div>EstuRoad · demo de producto · datos ficticios con fines ilustrativos</div>
         <div className="site-footer-links">
           {['Metodología','Privacidad','Para colegios','Contacto'].map((l) => <span key={l}>{l}</span>)}

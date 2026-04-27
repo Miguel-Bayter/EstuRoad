@@ -1,7 +1,23 @@
 import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, useMatch, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { AuthModal } from './AuthModal';
+
+function NavTab({ to, label, end, locked }: { to: string; label: string; end?: boolean; locked?: boolean }) {
+  const match = useMatch(end ? { path: to, end: true } : to);
+  if (locked) {
+    return <span className="nav-tab" aria-disabled="true">{label}</span>;
+  }
+  return (
+    <Link
+      to={to}
+      className={`nav-tab${match ? ' is-active' : ''}`}
+      aria-current={match ? 'page' : undefined}
+    >
+      {label}
+    </Link>
+  );
+}
 
 export function Nav() {
   const { profile, user, logout } = useApp();
@@ -28,29 +44,16 @@ export function Nav() {
 
   return (
     <>
-      <nav className="nav">
+      <nav role="navigation" aria-label="Navegación principal" className="nav">
         <div className="nav-left">
           <div className="logo" role="link" tabIndex={0} onClick={() => navigate('/')} onKeyDown={(e) => e.key === 'Enter' && navigate('/')}>
             <div className="logo-mark">e</div>
             <span>EstuRoad</span>
           </div>
           <div className="nav-tabs">
-            {tabs.map((t) =>
-              t.locked ? (
-                <span key={t.to} className="nav-tab" aria-disabled="true">
-                  {t.label}
-                </span>
-              ) : (
-                <NavLink
-                  key={t.to}
-                  to={t.to}
-                  end={t.end}
-                  className={({ isActive }) => `nav-tab${isActive ? ' is-active' : ''}`}
-                >
-                  {t.label}
-                </NavLink>
-              )
-            )}
+            {tabs.map((t) => (
+              <NavTab key={t.to} to={t.to} label={t.label} end={t.end} locked={t.locked} />
+            ))}
           </div>
         </div>
         <div className="nav-right">

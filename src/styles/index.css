@@ -57,6 +57,23 @@ h1,h2,h3,h4 { font-family: var(--font-display); font-weight: 500; letter-spacing
 a { color: inherit; }
 .mono { font-family: var(--font-mono); letter-spacing: 0.02em; text-transform: uppercase; font-size: 11px; }
 
+/* Accessibility */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 14px;
+  z-index: 200;
+  padding: 8px 16px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 0 0 8px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top .1s;
+}
+.skip-link:focus-visible { top: 0; }
+
 /* Shell */
 .shell {
   min-height: 100vh;
@@ -653,4 +670,20 @@ a { color: inherit; }
   background: linear-gradient(90deg, var(--paper-2) 25%, var(--line) 50%, var(--paper-2) 75%);
   background-size: 600px 100%;
   animation: shimmer 1.4s infinite linear;
+}
+
+/* ---- Focus ---- */
+:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .spinner, .skeleton-line, .skeleton-circle { animation: none; }
 }

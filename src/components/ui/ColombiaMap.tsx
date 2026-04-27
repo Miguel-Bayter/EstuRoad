@@ -47,9 +47,18 @@ export function ColombiaMap({
   const byReg = Object.fromEntries(highlights.map((r) => [r.regionId, r]));
 
   return (
-    <svg className="map-svg" viewBox={`0 0 ${W} ${H}`} width="100%" height={H}>
+    <svg
+      className="map-svg"
+      viewBox={`0 0 ${W} ${H}`}
+      width="100%"
+      height={H}
+      aria-labelledby="map-title"
+      role="group"
+    >
+      <title id="map-title">Mapa de Colombia con demanda por región</title>
+
       {COL_POINTS.map(([px, py], i) => (
-        <circle key={i} cx={px * W} cy={py * H} r={2.2} fill="var(--line)" />
+        <circle key={i} cx={px * W} cy={py * H} r={2.2} fill="var(--line)" aria-hidden="true" />
       ))}
 
       {Object.entries(REGION_COORDS).map(([id, info]) => {
@@ -57,17 +66,28 @@ export function ColombiaMap({
         const intensity = hl ? hl.intensity : 0.15;
         const size = 14 + intensity * 40;
         const active = activeRegion === id;
+        const demand = hl ? Math.round(hl.intensity * 100) : 0;
 
         return (
           <g
             key={id}
             className="map-region"
+            role="button"
+            tabIndex={0}
+            aria-label={`${info.label}: demanda ${demand}%`}
+            aria-pressed={active}
             onMouseEnter={() => onHover?.(id)}
             onMouseLeave={() => onHover?.(null)}
             onClick={() => onSelect?.(id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelect?.(id);
+              }
+            }}
           >
-            <circle cx={info.x * W} cy={info.y * H} r={size * 1.5} fill={info.color} opacity={active ? 0.25 : 0.12} />
-            <circle cx={info.x * W} cy={info.y * H} r={size * 0.55} fill={info.color} opacity={active ? 1 : 0.85} stroke="var(--ink)" strokeWidth={active ? 2 : 0} />
+            <circle cx={info.x * W} cy={info.y * H} r={size * 1.5} fill={info.color} opacity={active ? 0.25 : 0.12} aria-hidden="true" />
+            <circle cx={info.x * W} cy={info.y * H} r={size * 0.55} fill={info.color} opacity={active ? 1 : 0.85} stroke="var(--ink)" strokeWidth={active ? 2 : 0} aria-hidden="true" />
             <text
               x={info.x * W} y={info.y * H + size * 1.5 + 14}
               textAnchor="middle"
@@ -75,6 +95,7 @@ export function ColombiaMap({
               fontSize="10"
               fill="var(--ink-2)"
               className="map-label"
+              aria-hidden="true"
             >
               {info.label}
             </text>
@@ -87,6 +108,7 @@ export function ColombiaMap({
                 fontSize="14"
                 fontWeight="500"
                 fill="var(--paper)"
+                aria-hidden="true"
               >
                 {hl.count}
               </text>
