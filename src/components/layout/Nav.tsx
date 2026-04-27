@@ -3,11 +3,8 @@ import { Link, useMatch, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { AuthModal } from './AuthModal';
 
-function NavTab({ to, label, end, locked }: { to: string; label: string; end?: boolean; locked?: boolean }) {
+function NavTab({ to, label, end }: { to: string; label: string; end?: boolean }) {
   const match = useMatch(end ? { path: to, end: true } : to);
-  if (locked) {
-    return <span className="nav-tab" aria-disabled="true">{label}</span>;
-  }
   return (
     <Link
       to={to}
@@ -23,6 +20,7 @@ export function Nav() {
   const { profile, user, logout } = useApp();
   const canResults = profile.completed;
   const [modalOpen, setModalOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
@@ -51,12 +49,25 @@ export function Nav() {
             <span>EstuRoad</span>
           </div>
           <div className="nav-tabs">
-            {tabs.map((t) => (
-              <NavTab key={t.to} to={t.to} label={t.label} end={t.end} locked={t.locked} />
-            ))}
+            {tabs.map((t) =>
+              t.locked ? (
+                <span key={t.to} className="nav-tab" aria-disabled="true">{t.label}</span>
+              ) : (
+                <NavTab key={t.to} to={t.to} label={t.label} end={t.end} />
+              )
+            )}
           </div>
         </div>
         <div className="nav-right">
+          <button
+            type="button"
+            className="nav-hamburger"
+            aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen((v) => !v)}
+          >
+            {mobileOpen ? '✕' : '☰'}
+          </button>
           {user ? (
             <div className="nav-session">
               <button
@@ -101,6 +112,18 @@ export function Nav() {
             </>
           )}
         </div>
+
+        {mobileOpen && (
+          <div className="nav-mobile" onClick={() => setMobileOpen(false)}>
+            {tabs.map((t) =>
+              t.locked ? (
+                <span key={t.to} className="nav-tab" aria-disabled="true">{t.label}</span>
+              ) : (
+                <NavTab key={t.to} to={t.to} label={t.label} end={t.end} />
+              )
+            )}
+          </div>
+        )}
       </nav>
       {modalOpen && <AuthModal onClose={() => setModalOpen(false)} />}
     </>

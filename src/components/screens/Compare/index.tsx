@@ -58,28 +58,30 @@ export function Compare() {
         ))}
       </div>
 
-      <div className="compare">
-        <div className="compare-cell head">&nbsp;</div>
-        {carreras.map((c) => (
-          <div key={c.slug} className="compare-cell title">
-            {c.nombre}
-            <div className="sub">{c.tipo} · {c.duracion}</div>
-          </div>
-        ))}
-        {ROWS.map((row) => (
-          <>
-            <div key={`lbl-${row.label}`} className="compare-cell head">{row.label}</div>
-            {carreras.map((c) => (
-              <div key={`${c.slug}-${row.label}`} className="compare-cell">{row.render(c)}</div>
-            ))}
-          </>
-        ))}
-        <div className="compare-cell head">&nbsp;</div>
-        {carreras.map((c) => (
-          <div key={`cta-${c.slug}`} className="compare-cell">
-            <button type="button" className="btn sm" onClick={() => navigate(`/detalle/${c.slug}`)}>Ver detalle →</button>
-          </div>
-        ))}
+      <div className="compare-scroll">
+        <div className="compare">
+          <div className="compare-cell head">&nbsp;</div>
+          {carreras.map((c) => (
+            <div key={c.slug} className="compare-cell title">
+              {c.nombre}
+              <div className="sub">{c.tipo} · {c.duracion}</div>
+            </div>
+          ))}
+          {ROWS.map((row) => (
+            <>
+              <div key={`lbl-${row.label}`} className="compare-cell head">{row.label}</div>
+              {carreras.map((c) => (
+                <div key={`${c.slug}-${row.label}`} className="compare-cell">{row.render(c)}</div>
+              ))}
+            </>
+          ))}
+          <div className="compare-cell head">&nbsp;</div>
+          {carreras.map((c) => (
+            <div key={`cta-${c.slug}`} className="compare-cell">
+              <button type="button" className="btn sm" onClick={() => navigate(`/detalle/${c.slug}`)}>Ver detalle →</button>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

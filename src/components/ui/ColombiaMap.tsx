@@ -51,7 +51,6 @@ export function ColombiaMap({
       className="map-svg"
       viewBox={`0 0 ${W} ${H}`}
       width="100%"
-      height={H}
       aria-labelledby="map-title"
       role="group"
     >
