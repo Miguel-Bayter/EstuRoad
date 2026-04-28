@@ -6,6 +6,7 @@ import { Chip } from '../../ui/Chip';
 import { Spark } from '../../ui/Spark';
 import { ColombiaMap } from '../../ui/ColombiaMap';
 import { Skeleton } from '../../ui/Skeleton';
+import { EmptyState } from '../../ui/EmptyState';
 import { RIASEC } from '../../../data/constants';
 import { formatCOP } from '../../../utils/format';
 import type { Carrera } from '../../../types';
@@ -13,7 +14,7 @@ import type { Carrera } from '../../../types';
 export function Results() {
   const { profile, viewChoice } = useApp();
   const { ranked, loading, error } = useCarreras(profile);
-  const [filter, setFilter] = useState<'todas' | 'univ' | 'tec' | 'locales'>('todas');
+  const [filter, setFilter] = useState<'todas' | 'univ' | 'tec' | 'locales' | string>('todas');
   const navigate = useNavigate();
 
   if (loading) return (
@@ -24,8 +25,8 @@ export function Results() {
       </div>
     </div>
   );
-  if (error) return <div className="state-center"><p className="text-terra">Error: {error}</p></div>;
-  if (!ranked.length) return null;
+  if (error) return <div className="state-center"><EmptyState variant="error" /></div>;
+  if (!ranked.length) return <div className="state-center"><EmptyState variant="sin-resultados" /></div>;
 
   const top = ranked[0];
 
@@ -33,6 +34,7 @@ export function Results() {
     filter === 'univ' ? ranked.filter((c) => c.tipo.startsWith('Univ')) :
     filter === 'tec'  ? ranked.filter((c) => c.tipo.startsWith('Tec')) :
     filter === 'locales' ? ranked.filter((c) => (c.demandaPorRegion[profile.regionId as keyof typeof c.demandaPorRegion] ?? 0) >= 75) :
+    filter.startsWith('region-') ? ranked.filter((c) => (c.demandaPorRegion[filter.replace('region-', '') as keyof typeof c.demandaPorRegion] ?? 0) >= 50) :
     ranked;
 
   return (
@@ -56,7 +58,7 @@ export function Results() {
 
           {viewChoice === 'list' && <MatchList items={filtered} navigate={navigate} />}
           {viewChoice === 'cards' && <MatchCards items={filtered} navigate={navigate} />}
-          {viewChoice === 'map' && <MapView ranked={filtered} profile={profile} navigate={navigate} />}
+          {viewChoice === 'map' && <MapView ranked={filtered} profile={profile} navigate={navigate} onRegionSelect={(id: string) => setFilter(`region-${id}`)} />}
         </div>
 
         <aside className="side-stack">
@@ -155,7 +157,7 @@ function MatchCards({ items, navigate }: { items: Carrera[]; navigate: ReturnTyp
   );
 }
 
-function MapView({ ranked, navigate }: any) {
+function MapView({ ranked, navigate, onRegionSelect }: any) {
   const [activeSlug, setActiveSlug] = useState(ranked[0]?.slug);
   const [hoverReg, setHoverReg] = useState<string | null>(null);
   const carrera: Carrera = ranked.find((c: Carrera) => c.slug === activeSlug) ?? ranked[0];
@@ -166,7 +168,7 @@ function MapView({ ranked, navigate }: any) {
   return (
     <div className="match-map">
       <div>
-        <ColombiaMap highlights={hls} activeRegion={hoverReg} onHover={setHoverReg} />
+        <ColombiaMap highlights={hls} activeRegion={hoverReg} onHover={setHoverReg} onSelect={onRegionSelect} />
         <div className="map-footer">
           <span className="mono pl">Demanda por región · {carrera.nombre}</span>
           <button type="button" className="btn sm" onClick={() => navigate(`/detalle/${carrera.slug}`)}>Ver detalle →</button>
@@ -190,7 +192,12 @@ function ProfileCard({ profile, navigate }: any) {
   return (
     <div className="side-card">
       <h5>Tu perfil</h5>
-      {[['Ciudad', profile.ciudad], ['Estrato', profile.estrato], ['Presupuesto', profile.presupuesto === 0 ? 'Solo pública' : `$${(profile.presupuesto / 1e6).toFixed(1)}M`], ['Mudarse', `${profile.mudarse}%`]].map(([l, v]) => (
+      {[
+        ['Ciudad', profile.ciudad],
+        ['Estrato', profile.estrato],
+        ['Presupuesto', profile.presupuesto === 0 ? 'Solo pública' : `$${(profile.presupuesto / 1e6).toFixed(1)}M`],
+        ['Moverse a', (profile.regionesDisponibles ?? []).length === 0 ? 'Solo mi región' : `+${(profile.regionesDisponibles ?? []).length} región${(profile.regionesDisponibles ?? []).length > 1 ? 'es' : ''}`],
+      ].map(([l, v]) => (
         <div key={String(l)} className="mini-kpi"><span className="l">{l}</span><span className="v">{v}</span></div>
       ))}
       <button type="button" className="btn sm ghost full" onClick={() => navigate('/perfil')}>Editar perfil</button>
@@ -217,11 +224,12 @@ function RiasecCard({ riasec }: { riasec: string[] }) {
 }
 
 function DecisionCard({ profile }: any) {
-  const msg = profile.mudarse < 40
-    ? 'Te mostramos oportunidades locales primero.'
-    : profile.mudarse > 65
+  const disponibles = profile.regionesDisponibles ?? [];
+  const msg = disponibles.length === 0
+    ? 'Te mostramos oportunidades en tu región primero.'
+    : disponibles.length >= 3
     ? 'Exploramos opciones a nivel nacional.'
-    : 'Balance entre quedarte y migrar.';
+    : `Incluimos ${disponibles.length} región${disponibles.length > 1 ? 'es' : ''} adicional${disponibles.length > 1 ? 'es' : ''} en tu búsqueda.`;
 
   return (
     <div className="side-card green">

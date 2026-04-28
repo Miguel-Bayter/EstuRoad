@@ -10,7 +10,7 @@ import type { Carrera } from '../../../types';
 
 export function Detail() {
   const { slug } = useParams<{ slug: string }>();
-  const { profile } = useApp();
+  const { profile, toggleFavorite, isFavorite } = useApp();
   const navigate = useNavigate();
   const [carrera, setCarrera] = useState<Carrera | null>(null);
   const [loading, setLoading] = useState(true);
@@ -158,8 +158,12 @@ export function Detail() {
               <li>✓ {carrera.becasICETEX ? 'Hay becas y crédito ICETEX' : 'No aplica ICETEX'}</li>
               <li>✓ {carrera.regionesDemanda.length} regiones con demanda alta</li>
             </ul>
-            <button type="button" className="btn lime full">
-              Guardar en mis favoritos
+            <button
+              type="button"
+              className={`btn full${isFavorite(carrera.slug) ? ' ghost' : ' lime'}`}
+              onClick={() => toggleFavorite(carrera.slug)}
+            >
+              {isFavorite(carrera.slug) ? '✓ Guardado en favoritos' : 'Guardar en mis favoritos'}
             </button>
           </div>
         </aside>

@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
+import XLSX from 'xlsx-js-style';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../../context/AppContext';
 import { useCarreras } from '../../../hooks/useCarreras';
 import { Skeleton } from '../../ui/Skeleton';
+import { EmptyState } from '../../ui/EmptyState';
 import { formatCOP } from '../../../utils/format';
 import type { Carrera } from '../../../types';
 
@@ -21,8 +23,55 @@ export function Compare() {
     setSelected(base);
   }
 
+  function downloadXLSX() {
+    const regionKey = profile.regionId as keyof (typeof carreras)[0]['demandaPorRegion'];
+
+    const HEADER_STYLE = {
+      font: { bold: true, color: { rgb: 'FFFFFF' }, sz: 11 },
+      fill: { fgColor: { rgb: '2D6A4F' } },
+      alignment: { horizontal: 'center' as const, vertical: 'center' as const, wrapText: true },
+      border: { bottom: { style: 'thin', color: { rgb: 'FFFFFF' } } },
+    };
+    const LABEL_STYLE = {
+      font: { bold: true, sz: 10 },
+      fill: { fgColor: { rgb: 'F5F1E8' } },
+      alignment: { vertical: 'center' as const },
+    };
+    const CURRENCY_FMT = '"$"#,##0';
+    const PCT_FMT = '0"%"';
+
+    const headerRow = [
+      { v: 'Criterio', s: HEADER_STYLE },
+      ...carreras.map((c) => ({ v: c.nombre, s: HEADER_STYLE })),
+    ];
+
+    const dataRows: XLSX.CellObject[][] = [
+      [{ v: 'Match /100', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.score ?? 0, t: 'n' as const }))],
+      [{ v: 'Tipo', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.tipo }))],
+      [{ v: 'Duración', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.duracion }))],
+      [{ v: 'Salario entrada', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.salarioEntrada, t: 'n' as const, z: CURRENCY_FMT }))],
+      [{ v: 'Salario medio', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.salarioMedio, t: 'n' as const, z: CURRENCY_FMT }))],
+      [{ v: 'Salario senior', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.salarioAlto, t: 'n' as const, z: CURRENCY_FMT }))],
+      [{ v: 'Costo / semestre', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.costoSemestre === 0 ? 'Gratis' : c.costoSemestre, t: c.costoSemestre === 0 ? 's' as const : 'n' as const, z: c.costoSemestre === 0 ? undefined : CURRENCY_FMT }))],
+      [{ v: 'Empleabilidad', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.empleabilidad, t: 'n' as const, z: PCT_FMT }))],
+      [{ v: 'Demanda nacional', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.demanda }))],
+      [{ v: 'Proyección 2030', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.proyeccion2030 }))],
+      [{ v: `Demanda en ${profile.ciudad}`, s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.demandaPorRegion[regionKey] ?? 50, t: 'n' as const }))],
+      [{ v: 'ICETEX', s: LABEL_STYLE }, ...carreras.map((c) => ({ v: c.becasICETEX ? 'Sí' : 'No' }))],
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet([headerRow, ...dataRows]);
+
+    ws['!cols'] = [{ wch: 22 }, ...carreras.map(() => ({ wch: 26 }))];
+    ws['!rows'] = [{ hpt: 36 }, ...dataRows.map(() => ({ hpt: 22 }))];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Comparación EstuRoad');
+    XLSX.writeFile(wb, `esturoad-comparacion-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  }
+
   if (loading) return <div className="state-center"><Skeleton variant="hero" /></div>;
-  if (!ranked.length) return null;
+  if (!ranked.length) return <div className="state-center"><EmptyState variant="sin-resultados" /></div>;
 
   const carreras = ids.map((slug) => ranked.find((c) => c.slug === slug)!).filter(Boolean);
 
@@ -51,11 +100,21 @@ export function Compare() {
 
       <div className="compare-controls">
         <span className="mono pl">Cambia una carrera:</span>
-        {ids.map((id, i) => (
-          <select key={i} className="select sm" aria-label={`Carrera ${i + 1}`} value={id} onChange={(e) => swap(i, e.target.value)}>
-            {ranked.map((r) => <option key={r.slug} value={r.slug}>{r.nombre}</option>)}
-          </select>
-        ))}
+        {ids.map((id, i) => {
+          const others = ids.filter((_, j) => j !== i);
+          return (
+            <select key={i} className="select sm" aria-label={`Carrera ${i + 1}`} value={id} onChange={(e) => swap(i, e.target.value)}>
+              {ranked.map((r) => (
+                <option key={r.slug} value={r.slug} disabled={others.includes(r.slug)}>
+                  {r.nombre}
+                </option>
+              ))}
+            </select>
+          );
+        })}
+        <button type="button" className="btn sm ghost" onClick={downloadXLSX}>
+          Descargar Excel
+        </button>
       </div>
 
       <div className="compare-scroll">

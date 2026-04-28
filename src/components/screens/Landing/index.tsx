@@ -1,7 +1,15 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useApp } from '../../../context/AppContext';
+import { DEMO_PROFILE } from '../../../data/demoProfile';
 
 export function Landing() {
   const navigate = useNavigate();
+  const { setProfile } = useApp();
+
+  function loadDemo() {
+    setProfile(DEMO_PROFILE);
+    navigate('/resultados');
+  }
 
   return (
     <>
@@ -23,7 +31,7 @@ export function Landing() {
             <button type="button" className="btn lime" onClick={() => navigate('/perfil')}>
               Empezar test gratuito →
             </button>
-            <button type="button" className="btn ghost">Ver demo (2 min)</button>
+            <button type="button" className="btn ghost" onClick={loadDemo}>Ver demo (2 min)</button>
           </div>
           <div className="hero-meta">
             <div>
@@ -48,15 +56,15 @@ export function Landing() {
           </div>
           <div className="hv-map">
             <div className="hv-dots">
-              <div className="hv-pin" style={{ '--pin-top': '18%', '--pin-left': '48%' } as React.CSSProperties} />
-              <div className="hv-pin lime" style={{ '--pin-top': '38%', '--pin-left': '52%' } as React.CSSProperties} />
-              <div className="hv-pin green" style={{ '--pin-top': '55%', '--pin-left': '38%' } as React.CSSProperties} />
-              <div className="hv-pin" style={{ '--pin-top': '42%', '--pin-left': '72%' } as React.CSSProperties} />
-              <div className="hv-pin green" style={{ '--pin-top': '28%', '--pin-left': '58%' } as React.CSSProperties} />
-              <div className="hv-pin lime" style={{ '--pin-top': '72%', '--pin-left': '54%' } as React.CSSProperties} />
-              <div className="hv-pin line" style={{ '--pin-top': '20%', '--pin-left': '60%' } as React.CSSProperties}>Barranquilla · +84</div>
-              <div className="hv-pin line" style={{ '--pin-top': '48%', '--pin-left': '30%' } as React.CSSProperties}>Cali · +62</div>
-              <div className="hv-pin line" style={{ '--pin-top': '62%', '--pin-left': '64%' } as React.CSSProperties}>Villao · +38</div>
+              <div className="hv-pin hv-pin--1" />
+              <div className="hv-pin lime hv-pin--2" />
+              <div className="hv-pin green hv-pin--3" />
+              <div className="hv-pin hv-pin--4" />
+              <div className="hv-pin green hv-pin--5" />
+              <div className="hv-pin lime hv-pin--6" />
+              <div className="hv-pin line hv-pin--7">Barranquilla · +84</div>
+              <div className="hv-pin line hv-pin--8">Cali · +62</div>
+              <div className="hv-pin line hv-pin--9">Villao · +38</div>
             </div>
           </div>
           <div className="hv-bottom">
@@ -125,7 +133,7 @@ export function Landing() {
               </p>
               <div className="cta-actions">
                 <button type="button" className="btn lime" onClick={() => navigate('/perfil')}>Hacer el test →</button>
-                <button type="button" className="btn ghost light">Soy orientador</button>
+                <button type="button" className="btn ghost light" onClick={loadDemo}>Ver demo</button>
               </div>
             </div>
             <div className="cta-steps">
@@ -152,7 +160,10 @@ export function Landing() {
       <footer className="site-footer" role="contentinfo">
         <div>EstuRoad · demo de producto · datos ficticios con fines ilustrativos</div>
         <div className="site-footer-links">
-          {['Metodología','Privacidad','Para colegios','Contacto'].map((l) => <span key={l}>{l}</span>)}
+          <Link to="/metodologia">Metodología</Link>
+          <Link to="/privacidad">Privacidad</Link>
+          <Link to="/para-colegios">Para colegios</Link>
+          <Link to="/contacto">Contacto</Link>
         </div>
       </footer>
     </>

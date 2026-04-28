@@ -63,6 +63,7 @@ export const DEFAULT_PERFIL = {
   riasec: ['I', 'S', 'A'],
   habilidades: ['Creatividad', 'Pensamiento lógico', 'Empatía'],
   mudarse: 45,
+  regionesDisponibles: [],
   modalidad: '',
   internacional: 'Solo si hay beca',
   completed: false,

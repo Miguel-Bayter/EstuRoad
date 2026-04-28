@@ -9,6 +9,7 @@ import { Results } from './components/screens/Results';
 import { Detail } from './components/screens/Detail';
 import { Compare } from './components/screens/Compare';
 import { MapFull } from './components/screens/MapFull';
+import { StaticPage } from './components/screens/Static';
 import { NotFound } from './components/screens/NotFound';
 import './styles/index.css';
 
@@ -28,6 +29,10 @@ function AppShell() {
             <Route path="/detalle/:slug" element={<Detail />} />
             <Route path="/comparar" element={<Compare />} />
             <Route path="/mapa" element={<MapFull />} />
+            <Route path="/metodologia" element={<StaticPage page="metodologia" />} />
+            <Route path="/privacidad" element={<StaticPage page="privacidad" />} />
+            <Route path="/para-colegios" element={<StaticPage page="para-colegios" />} />
+            <Route path="/contacto" element={<StaticPage page="contacto" />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ErrorBoundary>

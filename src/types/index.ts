@@ -64,6 +64,7 @@ export interface Perfil {
   riasec: string[];
   habilidades: string[];
   mudarse: number;
+  regionesDisponibles: string[];
   modalidad: 'presencial' | 'virtual' | 'hibrido' | '';
   internacional: string;
   completed: boolean;

@@ -20,6 +20,9 @@ interface AppContextValue {
   user: AuthUser | null;
   login: (user: AuthUser) => void;
   logout: () => void;
+  favorites: string[];
+  toggleFavorite: (slug: string) => void;
+  isFavorite: (slug: string) => boolean;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -42,6 +45,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(() =>
     loadStorage<AuthUser | null>('er.user', null)
   );
+  const [favorites, setFavorites] = useState<string[]>(() =>
+    loadStorage<string[]>('er.favorites', [])
+  );
 
   const setProfile = useCallback(
     (p: Perfil | ((prev: Perfil) => Perfil)) => setProfileRaw(p),
@@ -49,6 +55,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
   const login = useCallback((u: AuthUser) => setUser(u), []);
   const logout = useCallback(() => setUser(null), []);
+  const toggleFavorite = useCallback((slug: string) => {
+    setFavorites((prev) =>
+      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
+    );
+  }, []);
+  const isFavorite = useCallback((slug: string) => favorites.includes(slug), [favorites]);
 
   useEffect(() => {
     localStorage.setItem('er.profile', JSON.stringify(profile));
@@ -57,6 +69,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem('er.user', JSON.stringify(user));
   }, [user]);
+
+  useEffect(() => {
+    localStorage.setItem('er.favorites', JSON.stringify(favorites));
+  }, [favorites]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-type', typeChoice);
@@ -73,8 +89,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       user,
       login,
       logout,
+      favorites,
+      toggleFavorite,
+      isFavorite,
     }),
-    [profile, setProfile, typeChoice, viewChoice, user, login, logout]
+    [profile, setProfile, typeChoice, viewChoice, user, login, logout, favorites, toggleFavorite, isFavorite]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
