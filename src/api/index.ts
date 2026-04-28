@@ -10,6 +10,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     ...init,
+    signal: init?.signal ?? AbortSignal.timeout(10_000),
   });
 
   const body = await res.json();

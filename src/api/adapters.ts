@@ -194,14 +194,15 @@ function buildUniversidades(names: string[], costoSemestre: number): Universidad
 }
 
 function buildStayVsLeave(raw: ApiCarrera): { stay: string; leave: string } {
-  const regionVals = Object.entries(raw.demandaPorRegion)
+  const regionVals = Object.entries(raw.demandaPorRegion ?? {})
     .filter((e): e is [string, number] => typeof e[1] === 'number');
   const topCity = regionVals.sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'Bogotá';
   const topScore = regionVals[0]?.[1] ?? 75;
+  const habs = (raw.habilidadesRequeridas ?? []).slice(0, 2);
 
   return {
-    stay: `La demanda regional por ${raw.nombre} sigue creciendo. Las habilidades más valoradas son ${raw.habilidadesRequeridas.slice(0, 2).join(' y ')}. Busca opciones en universidades locales con costos desde ${(raw.costoSemestre / 1_000_000).toFixed(1)}M/sem.`,
-    leave: `${topCity} concentra la mayor demanda nacional (${topScore}/100). Salario medio esperado: $${(raw.salarioMedio / 1_000_000).toFixed(1)}M. ${raw.proyeccion2030.split('.')[0]}.`,
+    stay: `La demanda regional por ${raw.nombre} sigue creciendo. Las habilidades más valoradas son ${habs.join(' y ') || 'análisis y comunicación'}. Busca opciones en universidades locales con costos desde ${((raw.costoSemestre ?? 0) / 1_000_000).toFixed(1)}M/sem.`,
+    leave: `${topCity} concentra la mayor demanda nacional (${topScore}/100). Salario medio esperado: $${((raw.salarioMedio ?? 0) / 1_000_000).toFixed(1)}M. ${(raw.proyeccion2030 ?? '').split('.')[0]}.`,
   };
 }
 
@@ -213,6 +214,18 @@ function extractProyeccion(raw: string): string {
 // --- Main adapter ---
 
 export function adaptCarrera(raw: ApiCarrera): Carrera {
+  // Sanitize & normalize API values
+  const empleabilidad = Math.max(0, Math.min(100, raw.empleabilidad ?? 50));
+  let salarioEntrada = raw.salarioEntrada ?? 0;
+  let salarioMedio = raw.salarioMedio ?? 0;
+  if (salarioMedio > 0 && salarioEntrada > 0 && salarioMedio < salarioEntrada) {
+    [salarioEntrada, salarioMedio] = [salarioMedio, salarioEntrada];
+  }
+  const univNames = Array.isArray(raw.universidades) ? raw.universidades : [];
+  const tags = Array.isArray(raw.tags) ? raw.tags : [];
+  const costoSemestre = raw.costoSemestre ?? 0;
+  const demandaRegion = raw.demandaPorRegion ?? {};
+
   return {
     _id: raw.slug,
     slug: raw.slug,
@@ -220,27 +233,27 @@ export function adaptCarrera(raw: ApiCarrera): Carrera {
     tipo: capitalizeType(raw.tipo),
     duracion: `${raw.duracionSemestres} semestres`,
     categoria: raw.categoria,
-    ematch: deriveRiasec(raw.categoria, raw.tags),
-    intereses: deriveIntereses(raw.categoria, raw.tags),
+    ematch: deriveRiasec(raw.categoria, tags),
+    intereses: deriveIntereses(raw.categoria, tags),
     resumen: raw.descripcion,
-    salarioEntrada: raw.salarioEntrada,
-    salarioMedio: raw.salarioMedio,
-    salarioAlto: Math.round(raw.salarioMedio * 1.65),
-    empleabilidad: raw.empleabilidad,
-    demanda: deriveDemanda(raw.empleabilidad),
-    costoSemestre: raw.costoSemestre,
-    becasICETEX: raw.acreditadaAltaCalidad || raw.costoSemestre <= 4500000,
-    regionesDemanda: deriveRegionesDemanda(raw.demandaPorRegion),
-    demandaPorRegion: mapToMacroregiones(raw.demandaPorRegion),
-    universidades: buildUniversidades(raw.universidades, raw.costoSemestre),
+    salarioEntrada,
+    salarioMedio,
+    salarioAlto: Math.round(salarioMedio * 1.65),
+    empleabilidad,
+    demanda: deriveDemanda(empleabilidad),
+    costoSemestre,
+    becasICETEX: raw.acreditadaAltaCalidad || costoSemestre <= 4500000,
+    regionesDemanda: deriveRegionesDemanda(demandaRegion),
+    demandaPorRegion: mapToMacroregiones(demandaRegion),
+    universidades: buildUniversidades(univNames, costoSemestre),
     stayVsLeave: buildStayVsLeave(raw),
-    proyeccion2030: extractProyeccion(raw.proyeccion2030),
-    // Extended fields from new API
+    proyeccion2030: extractProyeccion(raw.proyeccion2030 ?? 'Media'),
+    // Extended fields
     salarioMediana: raw.salarioMediana,
     tasaEmpleabilidad12m: raw.tasaEmpleabilidad12m,
-    habilidadesRequeridas: raw.habilidadesRequeridas,
-    tags: raw.tags,
-    acreditadaAltaCalidad: raw.acreditadaAltaCalidad,
+    habilidadesRequeridas: Array.isArray(raw.habilidadesRequeridas) ? raw.habilidadesRequeridas : [],
+    tags,
+    acreditadaAltaCalidad: raw.acreditadaAltaCalidad ?? false,
     cineCode: raw.cineCode,
   };
 }

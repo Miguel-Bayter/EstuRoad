@@ -13,7 +13,7 @@ import type { Carrera } from '../../../types';
 
 export function Results() {
   const { profile, viewChoice } = useApp();
-  const { ranked, loading, error } = useCarreras(profile);
+  const { ranked, loading, error, warning, refetch } = useCarreras(profile);
   const [filter, setFilter] = useState<'todas' | 'univ' | 'tec' | 'locales' | string>('todas');
   const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ export function Results() {
       </div>
     </div>
   );
-  if (error) return <div className="state-center"><EmptyState variant="error" /></div>;
+  if (error) return <div className="state-center"><EmptyState variant="error" onRetry={refetch} /></div>;
   if (!ranked.length) return <div className="state-center"><EmptyState variant="sin-resultados" /></div>;
 
   const top = ranked[0];
@@ -39,6 +39,12 @@ export function Results() {
 
   return (
     <section>
+      {warning && (
+        <div className="net-warning" role="alert">
+          <span>⚠ {warning}</span>
+          <button type="button" className="btn sm ghost" onClick={refetch}>Reintentar</button>
+        </div>
+      )}
       <div className="dash">
         <div className="dash-main">
           <DashHero top={top} navigate={navigate} />
@@ -65,7 +71,7 @@ export function Results() {
           <ProfileCard profile={profile} navigate={navigate} />
           <RiasecCard riasec={profile.riasec} />
           <DecisionCard profile={profile} />
-          <DemandaCard regionId={profile.regionId} />
+          <DemandaCard regionId={profile.regionId} carreras={ranked} />
         </aside>
       </div>
     </section>
@@ -240,11 +246,30 @@ function DecisionCard({ profile }: any) {
   );
 }
 
-function DemandaCard({ regionId }: { regionId: string }) {
+function buildDemandSeries(regionId: string, carreras: Carrera[]): number[] {
+  const top5 = carreras.slice(0, 5);
+  if (!top5.length) return [62, 65, 70, 72, 75, 80, 85, 92];
+
+  const key = regionId as keyof typeof top5[0]['demandaPorRegion'];
+  const base = Math.round(
+    top5.reduce((s, c) => s + (c.demandaPorRegion[key] ?? 50), 0) / top5.length
+  );
+
+  const altas = top5.filter((c) => /alta/i.test(c.proyeccion2030)).length;
+  const medias = top5.filter((c) => /media/i.test(c.proyeccion2030)).length;
+  const rate = altas >= 3 ? 0.08 : medias >= 3 ? 0.04 : 0.025;
+
+  return Array.from({ length: 8 }, (_, i) =>
+    Math.min(100, Math.round(base * Math.pow(1 + rate, i)))
+  );
+}
+
+function DemandaCard({ regionId, carreras }: { regionId: string; carreras: Carrera[] }) {
+  const series = buildDemandSeries(regionId, carreras);
   return (
     <div className="side-card">
       <h5>Demanda en tu región</h5>
-      <Spark values={[62,65,70,72,75,80,85,92]} color="var(--terra)" />
+      <Spark values={series} color="var(--terra)" />
       <p className="spark-caption">
         Crecimiento proyectado de vacantes en {regionId} entre 2022–2030.
       </p>
