@@ -14,19 +14,49 @@ import { StepHabilidades } from './steps/StepHabilidades';
 import { StepMovilidad } from './steps/StepMovilidad';
 
 const STEPS = [
-  { id: 'origen',    title: '¿De dónde escribes?',            sub: 'Tu ciudad y contexto cambian qué oportunidades tienes cerca.' },
-  { id: 'colegio',   title: 'Cuéntanos sobre tu colegio',     sub: 'Nos ayuda a afinar tus opciones realistas.' },
-  { id: 'bolsillo',  title: 'Tu bolsillo, sin vergüenza',     sub: 'Te mostramos carreras viables para tu presupuesto.' },
-  { id: 'materias',  title: '¿Qué materias te quedan fáciles?', sub: 'No es lo único que cuenta, pero es una pista.' },
-  { id: 'intereses', title: '¿Qué cosas te encienden?',       sub: 'Escoge al menos tres.' },
-  { id: 'riasec',    title: '¿Cómo te describirías?',         sub: 'Marca hasta 3 perfiles que más se parezcan a ti.' },
-  { id: 'habil',     title: 'Tus superpoderes',               sub: 'Escoge 3 habilidades que reconozcas en ti.' },
-  { id: 'movilidad', title: '¿Cómo prefieres estudiar?',  sub: 'La modalidad define qué tan flexible puedes ser con tu ubicación.' },
+  {
+    id: 'origen',
+    title: '¿De dónde escribes?',
+    sub: 'Tu ciudad y contexto cambian qué oportunidades tienes cerca.',
+  },
+  {
+    id: 'colegio',
+    title: 'Cuéntanos sobre tu colegio',
+    sub: 'Nos ayuda a afinar tus opciones realistas.',
+  },
+  {
+    id: 'bolsillo',
+    title: 'Tu bolsillo, sin vergüenza',
+    sub: 'Te mostramos carreras viables para tu presupuesto.',
+  },
+  {
+    id: 'materias',
+    title: '¿Qué materias te quedan fáciles?',
+    sub: 'No es lo único que cuenta, pero es una pista.',
+  },
+  { id: 'intereses', title: '¿Qué cosas te encienden?', sub: 'Escoge al menos tres.' },
+  {
+    id: 'riasec',
+    title: '¿Cómo te describirías?',
+    sub: 'Marca hasta 3 perfiles que más se parezcan a ti.',
+  },
+  { id: 'habil', title: 'Tus superpoderes', sub: 'Escoge 3 habilidades que reconozcas en ti.' },
+  {
+    id: 'movilidad',
+    title: '¿Cómo prefieres estudiar?',
+    sub: 'La modalidad define qué tan flexible puedes ser con tu ubicación.',
+  },
 ] as const;
 
 const STEP_COMPONENTS = [
-  StepOrigen, StepColegio, StepBolsillo, StepMaterias,
-  StepIntereses, StepRiasec, StepHabilidades, StepMovilidad,
+  StepOrigen,
+  StepColegio,
+  StepBolsillo,
+  StepMaterias,
+  StepIntereses,
+  StepRiasec,
+  StepHabilidades,
+  StepMovilidad,
 ];
 
 export function Onboarding() {
@@ -43,7 +73,8 @@ export function Onboarding() {
     } else {
       setProfile((p) => ({ ...p, completed: true }));
       navigate('/resultados');
-      authApi.create(profile)
+      authApi
+        .create(profile)
         .then((result) => {
           const authUser = authApi.toAuthUser(result);
           login(authUser);
@@ -56,7 +87,9 @@ export function Onboarding() {
   return (
     <section className="flow">
       <aside className="flow-aside">
-        <h4>Tu perfil — paso {step + 1}/{STEPS.length}</h4>
+        <h4>
+          Tu perfil — paso {step + 1}/{STEPS.length}
+        </h4>
         {STEPS.map((s, i) => (
           <div
             key={s.id}
@@ -69,14 +102,18 @@ export function Onboarding() {
           </div>
         ))}
         <div className="privacy-note">
-          <strong>Privacidad:</strong> tus datos nunca se venden ni se comparten con universidades sin tu permiso.
+          <strong>Privacidad:</strong> tus datos nunca se venden ni se comparten con universidades
+          sin tu permiso.
         </div>
       </aside>
 
       <div className="card">
         <div className="card-header">
           <div>
-            <span className="mono pl">Paso {String(step + 1).padStart(2, '0')} · {Math.round((step / (STEPS.length - 1)) * 100)}%</span>
+            <span className="mono pl">
+              Paso {String(step + 1).padStart(2, '0')} ·{' '}
+              {Math.round((step / (STEPS.length - 1)) * 100)}%
+            </span>
             <h3>{cur.title}</h3>
             <p className="card-lede">{cur.sub}</p>
           </div>
@@ -86,19 +123,26 @@ export function Onboarding() {
         <StepComponent profile={profile} setProfile={setProfile} />
 
         <div className="card-footer">
-          <button type="button" className="btn ghost" disabled={step === 0} onClick={() => setStep(step - 1)}>
+          <button
+            type="button"
+            className="btn ghost"
+            disabled={step === 0}
+            onClick={() => setStep(step - 1)}
+          >
             ← Atrás
           </button>
           {step < STEPS.length - 1 ? (
-            <button type="button" className="btn" onClick={next}>Siguiente →</button>
+            <button type="button" className="btn" onClick={next}>
+              Siguiente →
+            </button>
           ) : (
-            <button type="button" className="btn lime" onClick={next}>Ver mis resultados →</button>
+            <button type="button" className="btn lime" onClick={next}>
+              Ver mis resultados →
+            </button>
           )}
         </div>
       </div>
-      {codeToSave && (
-        <CodeRevealModal publicId={codeToSave} onClose={() => setCodeToSave(null)} />
-      )}
+      {codeToSave && <CodeRevealModal publicId={codeToSave} onClose={() => setCodeToSave(null)} />}
     </section>
   );
 }

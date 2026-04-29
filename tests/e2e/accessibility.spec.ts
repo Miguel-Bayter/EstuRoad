@@ -13,7 +13,10 @@ test.describe('Skip link', () => {
     await page.goto('/');
     await page.keyboard.press('Tab');
 
-    const linkText = await page.locator(':focus').innerText().catch(() => '');
+    const linkText = await page
+      .locator(':focus')
+      .innerText()
+      .catch(() => '');
     if (!linkText.toLowerCase().includes('saltar') && !linkText.toLowerCase().includes('skip')) {
       test.skip();
       return;
@@ -33,8 +36,8 @@ test.describe('Keyboard navigation — onboarding', () => {
     const focusedElements: string[] = [];
     for (let i = 0; i < 30; i++) {
       await page.keyboard.press('Tab');
-      const tag = await page.evaluate(() =>
-        `${document.activeElement?.tagName ?? 'none'}#${document.activeElement?.id ?? ''}`,
+      const tag = await page.evaluate(
+        () => `${document.activeElement?.tagName ?? 'none'}#${document.activeElement?.id ?? ''}`
       );
       focusedElements.push(tag);
     }
@@ -51,7 +54,7 @@ test.describe('Keyboard navigation — onboarding', () => {
     for (let i = 0; i < 60; i++) {
       await page.keyboard.press('Tab');
       const text = await page.evaluate(
-        () => (document.activeElement as HTMLElement)?.innerText?.trim() ?? '',
+        () => (document.activeElement as HTMLElement)?.innerText?.trim() ?? ''
       );
       if (/siguiente/i.test(text)) {
         found = true;
@@ -65,7 +68,9 @@ test.describe('Keyboard navigation — onboarding', () => {
     }
 
     await page.keyboard.press('Enter');
-    await expect(page.getByRole('heading', { name: /cuéntanos sobre tu colegio/i })).toBeVisible({ timeout: 3_000 });
+    await expect(page.getByRole('heading', { name: /cuéntanos sobre tu colegio/i })).toBeVisible({
+      timeout: 3_000,
+    });
   });
 });
 
@@ -83,9 +88,15 @@ test.describe('ARIA attributes', () => {
 
   test('filter chips in results have aria-pressed', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: /ver demo/i }).first().click();
+    await page
+      .getByRole('button', { name: /ver demo/i })
+      .first()
+      .click();
     await page.waitForURL('**/resultados', { timeout: 15_000 });
-    await page.locator('.match-row, .match-card').first().waitFor({ state: 'visible', timeout: 25_000 });
+    await page
+      .locator('.match-row, .match-card')
+      .first()
+      .waitFor({ state: 'visible', timeout: 25_000 });
 
     const chips = page.locator('.chips button, .chip');
     const count = await chips.count();
@@ -101,7 +112,9 @@ test.describe('ARIA attributes', () => {
     for (let i = 0; i < 7; i++) {
       await page.getByRole('button', { name: /siguiente/i }).click();
     }
-    await expect(page.getByRole('heading', { name: /cómo prefieres estudiar/i })).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByRole('heading', { name: /cómo prefieres estudiar/i })).toBeVisible({
+      timeout: 5_000,
+    });
 
     const regionChips = page.locator('.region-chip');
     const count = await regionChips.count();
@@ -115,9 +128,15 @@ test.describe('ARIA attributes', () => {
 test.describe('Colombia Map accessibility', () => {
   test('SVG map has role=img or is labelled', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: /ver demo/i }).first().click();
+    await page
+      .getByRole('button', { name: /ver demo/i })
+      .first()
+      .click();
     await page.waitForURL('**/resultados', { timeout: 15_000 });
-    await page.locator('.match-row, .match-card').first().waitFor({ state: 'visible', timeout: 25_000 });
+    await page
+      .locator('.match-row, .match-card')
+      .first()
+      .waitFor({ state: 'visible', timeout: 25_000 });
 
     const mapBtn = page.locator('button').filter({ hasText: /mapa/i });
     if (await mapBtn.isVisible()) {

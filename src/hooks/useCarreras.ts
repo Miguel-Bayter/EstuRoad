@@ -23,17 +23,14 @@ export function useCarreras(perfil: Perfil): UseCarrerasResult {
   const abortRef = useRef<AbortController | null>(null);
 
   const doFetch = useCallback(() => {
-    if (carrerasCache) {
-      setCarreras(carrerasCache);
-      setLoading(false);
-      return;
-    }
+    // Cache hit: state was already initialised from useState lazy init — no setState needed
+    if (carrerasCache !== null) return;
+
     abortRef.current?.abort();
     abortRef.current = new AbortController();
-    setLoading(true);
-    setError(null);
-    setWarning(null);
 
+    // All setState calls below are async (inside Promise callbacks), satisfying
+    // the react-hooks/set-state-in-effect rule.
     carrerasApi
       .list()
       .then((data) => {
@@ -60,6 +57,9 @@ export function useCarreras(perfil: Perfil): UseCarrerasResult {
 
   const refetch = useCallback(() => {
     carrerasCache = null;
+    setLoading(true);
+    setError(null);
+    setWarning(null);
     doFetch();
   }, [doFetch]);
 

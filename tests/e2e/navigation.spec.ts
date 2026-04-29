@@ -3,7 +3,10 @@ import { test, expect } from '@playwright/test';
 // Loads demo profile and waits for the first career row to be visible
 async function loadDemo(page: Parameters<Parameters<typeof test>[1]>[0]) {
   await page.goto('/');
-  await page.getByRole('button', { name: /ver demo/i }).first().click();
+  await page
+    .getByRole('button', { name: /ver demo/i })
+    .first()
+    .click();
   await page.waitForURL('**/resultados', { timeout: 15_000 });
   // Wait directly for the career list — avoids networkidle issues with Vite HMR websockets
   await page.locator('.match-row').first().waitFor({ state: 'visible', timeout: 25_000 });
@@ -35,7 +38,9 @@ test.describe('Navigation', () => {
 
   test('unknown route shows 404 page', async ({ page }) => {
     await page.goto('/esta-ruta-no-existe-aqui');
-    await expect(page.getByRole('heading', { name: /página no encontrada/i })).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByRole('heading', { name: /página no encontrada/i })).toBeVisible({
+      timeout: 5_000,
+    });
   });
 
   test('direct URL /resultados works without prior navigation', async ({ page }) => {

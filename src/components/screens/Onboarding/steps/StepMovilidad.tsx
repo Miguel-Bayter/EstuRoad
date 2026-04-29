@@ -2,7 +2,10 @@ import { Chip } from '../../../ui/Chip';
 import { REGIONES } from '../../../../data/constants';
 import type { Perfil } from '../../../../types';
 
-interface Props { profile: Perfil; setProfile: (p: Perfil | ((prev: Perfil) => Perfil)) => void; }
+interface Props {
+  profile: Perfil;
+  setProfile: (p: Perfil | ((prev: Perfil) => Perfil)) => void;
+}
 
 type Modalidad = 'presencial' | 'virtual' | 'hibrido';
 
@@ -53,7 +56,9 @@ export function StepMovilidad({ profile, setProfile }: Props) {
       <div className="field">
         <label className="field-label">
           ¿A qué regiones de Colombia estarías dispuesto a moverte para estudiar?
-          <span className="field-hint">Tu región ya está incluida. Selecciona las adicionales.</span>
+          <span className="field-hint">
+            Tu región ya está incluida. Selecciona las adicionales.
+          </span>
         </label>
         <div className="region-chips">
           <button
@@ -74,13 +79,19 @@ export function StepMovilidad({ profile, setProfile }: Props) {
                 type="button"
                 className={`region-chip${selected ? ' region-chip--selected' : ''}`}
                 aria-pressed={selected}
-                onClick={() => setProfile((p) => {
-                  const prev = p.regionesDisponibles ?? [];
-                  const next = prev.includes(r.id)
-                    ? prev.filter((x) => x !== r.id)
-                    : [...prev, r.id];
-                  return { ...p, regionesDisponibles: next, mudarse: next.length === 0 ? 10 : Math.min(98, 30 + next.length * 20) };
-                })}
+                onClick={() =>
+                  setProfile((p) => {
+                    const prev = p.regionesDisponibles ?? [];
+                    const next = prev.includes(r.id)
+                      ? prev.filter((x) => x !== r.id)
+                      : [...prev, r.id];
+                    return {
+                      ...p,
+                      regionesDisponibles: next,
+                      mudarse: next.length === 0 ? 10 : Math.min(98, 30 + next.length * 20),
+                    };
+                  })
+                }
               >
                 <span className="region-chip-name">{r.nombre}</span>
                 <span className="region-chip-cities">{r.ciudades.slice(0, 2).join(', ')}</span>
@@ -94,7 +105,11 @@ export function StepMovilidad({ profile, setProfile }: Props) {
         <label className="field-label">¿Te interesan programas internacionales?</label>
         <div className="chips">
           {['Sí, muchísimo', 'Solo si hay beca', 'No por ahora'].map((r) => (
-            <Chip key={r} active={profile.internacional === r} onClick={() => setProfile((p) => ({ ...p, internacional: r }))}>
+            <Chip
+              key={r}
+              active={profile.internacional === r}
+              onClick={() => setProfile((p) => ({ ...p, internacional: r }))}
+            >
               {r}
             </Chip>
           ))}

@@ -3,14 +3,19 @@ import { test, expect } from '@playwright/test';
 test.describe('Frontend security — localStorage', () => {
   test('sessionToken is NOT stored in localStorage after demo load', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: /ver demo/i }).first().click();
+    await page
+      .getByRole('button', { name: /ver demo/i })
+      .first()
+      .click();
     await page.waitForURL('**/resultados', { timeout: 15_000 });
 
     const token = await page.evaluate(() => localStorage.getItem('sessionToken'));
     expect(token).toBeNull();
   });
 
-  test('sessionToken is NOT stored in localStorage after onboarding completion', async ({ page }) => {
+  test('sessionToken is NOT stored in localStorage after onboarding completion', async ({
+    page,
+  }) => {
     await page.goto('/perfil');
 
     // Click through all 8 steps without filling fields
@@ -26,7 +31,10 @@ test.describe('Frontend security — localStorage', () => {
 
   test('profile data in localStorage is JSON (not raw token)', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: /ver demo/i }).first().click();
+    await page
+      .getByRole('button', { name: /ver demo/i })
+      .first()
+      .click();
     await page.waitForURL('**/resultados', { timeout: 15_000 });
 
     const raw = await page.evaluate(() => localStorage.getItem('er.profile'));

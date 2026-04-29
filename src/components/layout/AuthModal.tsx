@@ -37,12 +37,14 @@ export function CodeRevealModal({ publicId, onClose }: CodeRevealProps) {
       >
         <div className="modal-header">
           <h3 id="code-reveal-title">Guarda tu código</h3>
-          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">✕</button>
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">
+            ✕
+          </button>
         </div>
         <div className="modal-body">
           <p className="modal-desc">
-            Este es tu <strong>código único</strong>. Guárdalo para recuperar tu perfil
-            y resultados desde cualquier dispositivo cuando quieras.
+            Este es tu <strong>código único</strong>. Guárdalo para recuperar tu perfil y resultados
+            desde cualquier dispositivo cuando quieras.
           </p>
           <div className="code-box">
             <span className="code-box-text mono">{publicId}</span>
@@ -97,7 +99,9 @@ export function AuthModal({ onClose }: AuthModalProps) {
       >
         <div className="modal-header">
           <h3 id="auth-modal-title">Tu sesión en EstuRoad</h3>
-          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">✕</button>
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">
+            ✕
+          </button>
         </div>
 
         <div className="modal-tabs">
@@ -120,13 +124,16 @@ export function AuthModal({ onClose }: AuthModalProps) {
         {tab === 'nueva' ? (
           <div className="modal-body">
             <p className="modal-desc">
-              Al completar el cuestionario te asignamos un <strong>código único</strong>.
-              Guárdalo para retomar tu perfil y resultados cuando quieras.
+              Al completar el cuestionario te asignamos un <strong>código único</strong>. Guárdalo
+              para retomar tu perfil y resultados cuando quieras.
             </p>
             <button
               type="button"
               className="btn lime full"
-              onClick={() => { onClose(); navigate('/perfil'); }}
+              onClick={() => {
+                onClose();
+                navigate('/perfil');
+              }}
             >
               Empezar cuestionario →
             </button>
@@ -139,10 +146,17 @@ export function AuthModal({ onClose }: AuthModalProps) {
               type="text"
               placeholder="ej. abc123def456"
               value={publicId}
-              onChange={(e) => { setPublicId(e.target.value); setError(''); }}
+              onChange={(e) => {
+                setPublicId(e.target.value);
+                setError('');
+              }}
               onKeyDown={(e) => e.key === 'Enter' && handleRecover()}
             />
-            {error && <p className="modal-error" role="alert">{error}</p>}
+            {error && (
+              <p className="modal-error" role="alert">
+                {error}
+              </p>
+            )}
             <button
               type="button"
               className="btn full"

@@ -1,32 +1,53 @@
 import type { Carrera, Perfil } from '../types';
 
 const MATERIAS_TO_CATEGORIA: Record<string, string[]> = {
-  'Matemáticas':              ['Ingeniería y afines', 'Matemáticas y ciencias naturales', 'Economía y administración'],
-  'Física':                   ['Ingeniería y afines', 'Matemáticas y ciencias naturales'],
-  'Química':                  ['Ciencias de la salud', 'Matemáticas y ciencias naturales', 'Agronomía y veterinaria'],
-  'Biología':                 ['Ciencias de la salud', 'Agronomía y veterinaria', 'Matemáticas y ciencias naturales'],
+  Matemáticas: [
+    'Ingeniería y afines',
+    'Matemáticas y ciencias naturales',
+    'Economía y administración',
+  ],
+  Física: ['Ingeniería y afines', 'Matemáticas y ciencias naturales'],
+  Química: ['Ciencias de la salud', 'Matemáticas y ciencias naturales', 'Agronomía y veterinaria'],
+  Biología: ['Ciencias de la salud', 'Agronomía y veterinaria', 'Matemáticas y ciencias naturales'],
   'Tecnología e informática': ['Ingeniería y afines'],
-  'Español':                  ['Ciencias sociales y humanas', 'Ciencias de la educación', 'Bellas artes', 'Derecho y ciencias políticas'],
-  'Historia':                 ['Ciencias sociales y humanas', 'Derecho y ciencias políticas', 'Ciencias de la educación'],
-  'Geografía':                ['Ciencias sociales y humanas', 'Agronomía y veterinaria'],
-  'Sociales':                 ['Ciencias sociales y humanas', 'Derecho y ciencias políticas'],
-  'Arte y música':            ['Bellas artes', 'Ciencias de la educación'],
-  'Filosofía':                ['Ciencias sociales y humanas', 'Derecho y ciencias políticas', 'Ciencias de la educación'],
-  'Inglés':                   ['Ciencias de la educación', 'Ciencias sociales y humanas'],
-  'Ciencias naturales':       ['Ciencias de la salud', 'Agronomía y veterinaria', 'Matemáticas y ciencias naturales'],
-  'Educación física':         ['Ciencias de la salud'],
+  Español: [
+    'Ciencias sociales y humanas',
+    'Ciencias de la educación',
+    'Bellas artes',
+    'Derecho y ciencias políticas',
+  ],
+  Historia: [
+    'Ciencias sociales y humanas',
+    'Derecho y ciencias políticas',
+    'Ciencias de la educación',
+  ],
+  Geografía: ['Ciencias sociales y humanas', 'Agronomía y veterinaria'],
+  Sociales: ['Ciencias sociales y humanas', 'Derecho y ciencias políticas'],
+  'Arte y música': ['Bellas artes', 'Ciencias de la educación'],
+  Filosofía: [
+    'Ciencias sociales y humanas',
+    'Derecho y ciencias políticas',
+    'Ciencias de la educación',
+  ],
+  Inglés: ['Ciencias de la educación', 'Ciencias sociales y humanas'],
+  'Ciencias naturales': [
+    'Ciencias de la salud',
+    'Agronomía y veterinaria',
+    'Matemáticas y ciencias naturales',
+  ],
+  'Educación física': ['Ciencias de la salud'],
 };
 
 const CATEGORIA_TO_RIASEC: Record<string, string[]> = {
-  'Ingeniería y afines':              ['I', 'R', 'C'],
-  'Ciencias de la salud':             ['I', 'S', 'R'],
-  'Ciencias sociales y humanas':      ['S', 'A', 'I'],
-  'Economía y administración':        ['E', 'C', 'I'],
-  'Bellas artes':                     ['A', 'R', 'I'],
-  'Derecho y ciencias políticas':     ['E', 'S', 'C'],
-  'Ciencias de la educación':         ['S', 'A', 'I'],
+  'Ingeniería y afines': ['I', 'R', 'C'],
+  'Ciencias de la salud': ['I', 'S', 'R'],
+  'Ciencias sociales y humanas': ['S', 'A', 'I'],
+  'Economía y administración': ['E', 'C', 'I'],
+  'Bellas artes': ['A', 'R', 'I'],
+  'Derecho y ciencias políticas': ['E', 'S', 'C'],
+  'Ciencias de la educación': ['S', 'A', 'I'],
   'Matemáticas y ciencias naturales': ['I', 'R', 'C'],
-  'Agronomía y veterinaria':          ['R', 'I', 'S'],
+  'Agronomía y veterinaria': ['R', 'I', 'S'],
 };
 
 function materiasBonus(categoria: string, materias: string[]): number {
@@ -47,7 +68,9 @@ export function scoreCarrera(carrera: Carrera, perfil: Perfil): number {
 
   // Habilidades match (max +10)
   if (carrera.habilidadesRequeridas?.length) {
-    const matchHabil = carrera.habilidadesRequeridas.filter((h) => perfil.habilidades.includes(h)).length;
+    const matchHabil = carrera.habilidadesRequeridas.filter((h) =>
+      perfil.habilidades.includes(h)
+    ).length;
     score += Math.min(10, matchHabil * 4);
   }
 
@@ -56,7 +79,9 @@ export function scoreCarrera(carrera: Carrera, perfil: Perfil): number {
 
   // Materias → RIASEC cross-signal (max +6): materias imply RIASEC codes via their categorias
   const materiasCats = perfil.materias.flatMap((m) => MATERIAS_TO_CATEGORIA[m] ?? []);
-  const materiasRiasec = [...new Set(materiasCats.flatMap((cat) => CATEGORIA_TO_RIASEC[cat] ?? []))];
+  const materiasRiasec = [
+    ...new Set(materiasCats.flatMap((cat) => CATEGORIA_TO_RIASEC[cat] ?? [])),
+  ];
   const crossMatch = carrera.ematch.filter((r) => materiasRiasec.includes(r)).length;
   score += Math.min(6, crossMatch * 2);
 

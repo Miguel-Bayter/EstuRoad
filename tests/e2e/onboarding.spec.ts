@@ -3,7 +3,10 @@ import { test, expect } from '@playwright/test';
 test.describe('Demo flow', () => {
   test('clicking "Ver demo" on landing navigates to /resultados with results', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: /ver demo/i }).first().click();
+    await page
+      .getByRole('button', { name: /ver demo/i })
+      .first()
+      .click();
     await page.waitForURL('**/resultados');
     await page.waitForLoadState('networkidle', { timeout: 25_000 });
     await expect(page.locator('.match-row, .match-card').first()).toBeVisible({ timeout: 5_000 });

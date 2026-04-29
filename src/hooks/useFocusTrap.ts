@@ -12,16 +12,25 @@ export function useFocusTrap(containerRef: RefObject<HTMLElement | null>, onEsca
     first?.focus();
 
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') { onEscape(); return; }
+      if (e.key === 'Escape') {
+        onEscape();
+        return;
+      }
       if (e.key !== 'Tab' || !containerRef.current) return;
 
       const nodes = Array.from(containerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE));
       if (!nodes.length) return;
 
       if (e.shiftKey) {
-        if (document.activeElement === nodes[0]) { e.preventDefault(); nodes[nodes.length - 1].focus(); }
+        if (document.activeElement === nodes[0]) {
+          e.preventDefault();
+          nodes[nodes.length - 1].focus();
+        }
       } else {
-        if (document.activeElement === nodes[nodes.length - 1]) { e.preventDefault(); nodes[0].focus(); }
+        if (document.activeElement === nodes[nodes.length - 1]) {
+          e.preventDefault();
+          nodes[0].focus();
+        }
       }
     }
 

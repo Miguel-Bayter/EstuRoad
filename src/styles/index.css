@@ -812,6 +812,25 @@ a { color: inherit; }
   animation: shimmer 1.4s infinite linear;
 }
 
+/* ---- Demo banner ---- */
+.demo-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: color-mix(in srgb, var(--lime) 12%, var(--paper));
+  border: 1px solid var(--lime);
+  border-radius: 8px; padding: 10px 16px;
+  margin: 0 0 16px;
+  font-size: 13px; font-weight: 500; color: var(--green);
+}
+
+/* Demo pill in Nav logo */
+.demo-pill {
+  display: inline-flex; align-items: center;
+  background: var(--lime); color: var(--green);
+  font-size: 9px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; padding: 2px 6px; border-radius: 4px;
+  margin-left: 4px; line-height: 1.4;
+}
+
 /* ---- Network warning banner ---- */
 .net-warning {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;

@@ -1,24 +1,57 @@
 const COL_POINTS: [number, number][] = [
-  [0.45,0.05],[0.55,0.08],[0.65,0.12],[0.38,0.12],
-  [0.50,0.18],[0.62,0.20],[0.72,0.18],[0.80,0.22],
-  [0.42,0.28],[0.48,0.30],[0.54,0.28],[0.60,0.32],
-  [0.38,0.38],[0.46,0.40],[0.52,0.42],[0.58,0.42],[0.64,0.40],
-  [0.42,0.50],[0.48,0.52],[0.54,0.52],[0.60,0.52],
-  [0.68,0.40],[0.76,0.42],[0.82,0.44],[0.88,0.48],
-  [0.72,0.52],[0.80,0.54],[0.88,0.58],
-  [0.32,0.35],[0.28,0.42],[0.26,0.50],[0.28,0.58],[0.32,0.65],
-  [0.40,0.62],[0.48,0.65],[0.56,0.68],[0.64,0.70],[0.72,0.72],
-  [0.44,0.75],[0.52,0.78],[0.60,0.82],[0.68,0.85],
-  [0.48,0.88],[0.56,0.92],
+  [0.45, 0.05],
+  [0.55, 0.08],
+  [0.65, 0.12],
+  [0.38, 0.12],
+  [0.5, 0.18],
+  [0.62, 0.2],
+  [0.72, 0.18],
+  [0.8, 0.22],
+  [0.42, 0.28],
+  [0.48, 0.3],
+  [0.54, 0.28],
+  [0.6, 0.32],
+  [0.38, 0.38],
+  [0.46, 0.4],
+  [0.52, 0.42],
+  [0.58, 0.42],
+  [0.64, 0.4],
+  [0.42, 0.5],
+  [0.48, 0.52],
+  [0.54, 0.52],
+  [0.6, 0.52],
+  [0.68, 0.4],
+  [0.76, 0.42],
+  [0.82, 0.44],
+  [0.88, 0.48],
+  [0.72, 0.52],
+  [0.8, 0.54],
+  [0.88, 0.58],
+  [0.32, 0.35],
+  [0.28, 0.42],
+  [0.26, 0.5],
+  [0.28, 0.58],
+  [0.32, 0.65],
+  [0.4, 0.62],
+  [0.48, 0.65],
+  [0.56, 0.68],
+  [0.64, 0.7],
+  [0.72, 0.72],
+  [0.44, 0.75],
+  [0.52, 0.78],
+  [0.6, 0.82],
+  [0.68, 0.85],
+  [0.48, 0.88],
+  [0.56, 0.92],
 ];
 
 const REGION_COORDS: Record<string, { x: number; y: number; label: string; color: string }> = {
-  caribe:    { x:0.56, y:0.15, label:'Caribe',    color:'var(--terra)' },
-  andina:    { x:0.50, y:0.42, label:'Andina',    color:'var(--green)' },
-  pacifico:  { x:0.28, y:0.52, label:'Pacífica',  color:'var(--plum)' },
-  orinoquia: { x:0.78, y:0.50, label:'Orinoquía', color:'var(--lime)' },
-  amazonia:  { x:0.56, y:0.78, label:'Amazonía',  color:'var(--green-soft)' },
-  insular:   { x:0.14, y:0.10, label:'Insular',   color:'var(--sky)' },
+  caribe: { x: 0.56, y: 0.15, label: 'Caribe', color: 'var(--terra)' },
+  andina: { x: 0.5, y: 0.42, label: 'Andina', color: 'var(--green)' },
+  pacifico: { x: 0.28, y: 0.52, label: 'Pacífica', color: 'var(--plum)' },
+  orinoquia: { x: 0.78, y: 0.5, label: 'Orinoquía', color: 'var(--lime)' },
+  amazonia: { x: 0.56, y: 0.78, label: 'Amazonía', color: 'var(--green-soft)' },
+  insular: { x: 0.14, y: 0.1, label: 'Insular', color: 'var(--sky)' },
 };
 
 interface RegionHighlight {
@@ -85,10 +118,27 @@ export function ColombiaMap({
               }
             }}
           >
-            <circle cx={info.x * W} cy={info.y * H} r={size * 1.5} fill={info.color} opacity={active ? 0.25 : 0.12} aria-hidden="true" />
-            <circle cx={info.x * W} cy={info.y * H} r={size * 0.55} fill={info.color} opacity={active ? 1 : 0.85} stroke="var(--ink)" strokeWidth={active ? 2 : 0} aria-hidden="true" />
+            <circle
+              cx={info.x * W}
+              cy={info.y * H}
+              r={size * 1.5}
+              fill={info.color}
+              opacity={active ? 0.25 : 0.12}
+              aria-hidden="true"
+            />
+            <circle
+              cx={info.x * W}
+              cy={info.y * H}
+              r={size * 0.55}
+              fill={info.color}
+              opacity={active ? 1 : 0.85}
+              stroke="var(--ink)"
+              strokeWidth={active ? 2 : 0}
+              aria-hidden="true"
+            />
             <text
-              x={info.x * W} y={info.y * H + size * 1.5 + 14}
+              x={info.x * W}
+              y={info.y * H + size * 1.5 + 14}
               textAnchor="middle"
               fontFamily="var(--font-mono)"
               fontSize="10"
@@ -100,7 +150,8 @@ export function ColombiaMap({
             </text>
             {hl && (
               <text
-                x={info.x * W} y={info.y * H + 3}
+                x={info.x * W}
+                y={info.y * H + 3}
                 textAnchor="middle"
                 fontFamily="var(--font-display)"
                 fontStyle="italic"

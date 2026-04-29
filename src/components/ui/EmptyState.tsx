@@ -37,7 +37,9 @@ export function EmptyState({ variant, onRetry }: EmptyStateProps) {
       <h4 className="empty-title">{title}</h4>
       <p className="empty-body">{body}</p>
       {variant === 'error' && onRetry && (
-        <button type="button" className="btn sm" onClick={onRetry}>Reintentar</button>
+        <button type="button" className="btn sm" onClick={onRetry}>
+          Reintentar
+        </button>
       )}
       {cta && variant !== 'error' && (
         <button type="button" className="btn sm ghost" onClick={() => navigate('/resultados')}>

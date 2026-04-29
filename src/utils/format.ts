@@ -6,6 +6,10 @@ export function formatCOP(n: number): string {
 
 export function toggle<T>(list: T[], v: T): T[] {
   const set = new Set(list);
-  set.has(v) ? set.delete(v) : set.add(v);
+  if (set.has(v)) {
+    set.delete(v);
+  } else {
+    set.add(v);
+  }
   return [...set];
 }

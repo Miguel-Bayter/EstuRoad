@@ -25,13 +25,20 @@ export function TweaksPanel() {
         <div className="tweaks">
           <div className="tweaks-header">
             <span className="tweaks-label">Apariencia</span>
-            <button type="button" className="tweaks-close" onClick={() => setOpen(false)}>✕</button>
+            <button type="button" className="tweaks-close" onClick={() => setOpen(false)}>
+              ✕
+            </button>
           </div>
           <div className="tweaks-group">
             <h5>Tipografía</h5>
             <div className="opts">
               {TYPE_OPTIONS.map((o) => (
-                <button key={o.v} type="button" className={typeChoice === o.v ? 'is-active' : ''} onClick={() => setTypeChoice(o.v)}>
+                <button
+                  key={o.v}
+                  type="button"
+                  className={typeChoice === o.v ? 'is-active' : ''}
+                  onClick={() => setTypeChoice(o.v)}
+                >
                   {o.label}
                 </button>
               ))}
@@ -41,7 +48,12 @@ export function TweaksPanel() {
             <h5>Vista de resultados</h5>
             <div className="opts">
               {VIEW_OPTIONS.map((o) => (
-                <button key={o.v} type="button" className={viewChoice === o.v ? 'is-active' : ''} onClick={() => setViewChoice(o.v)}>
+                <button
+                  key={o.v}
+                  type="button"
+                  className={viewChoice === o.v ? 'is-active' : ''}
+                  onClick={() => setViewChoice(o.v)}
+                >
                   {o.label}
                 </button>
               ))}

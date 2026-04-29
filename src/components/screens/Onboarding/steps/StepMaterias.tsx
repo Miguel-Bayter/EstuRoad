@@ -3,7 +3,10 @@ import { MATERIAS } from '../../../../data/constants';
 import { toggle } from '../../../../utils/format';
 import type { Perfil } from '../../../../types';
 
-interface Props { profile: Perfil; setProfile: (p: Perfil | ((prev: Perfil) => Perfil)) => void; }
+interface Props {
+  profile: Perfil;
+  setProfile: (p: Perfil | ((prev: Perfil) => Perfil)) => void;
+}
 
 export function StepMaterias({ profile, setProfile }: Props) {
   return (

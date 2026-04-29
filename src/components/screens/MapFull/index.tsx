@@ -15,8 +15,18 @@ export function MapFull() {
   const [hoverReg, setHoverReg] = useState<string | null>(null);
   const [activeRegion, setActiveRegion] = useState<string | null>(null);
 
-  if (loading) return <div className="state-center"><Skeleton variant="hero" /></div>;
-  if (!ranked.length) return <div className="state-center"><EmptyState variant="sin-resultados" /></div>;
+  if (loading)
+    return (
+      <div className="state-center">
+        <Skeleton variant="hero" />
+      </div>
+    );
+  if (!ranked.length)
+    return (
+      <div className="state-center">
+        <EmptyState variant="sin-resultados" />
+      </div>
+    );
 
   const current: Carrera = ranked.find((c) => c.slug === activeSlug) ?? ranked[0];
   const hls = Object.entries(current.demandaPorRegion).map(([regionId, v]) => ({
@@ -28,8 +38,14 @@ export function MapFull() {
   return (
     <section>
       <div className="section-head section-head--mt">
-        <h2>Dónde está el trabajo<br />para cada carrera.</h2>
-        <p className="section-lede">Interactivo. Hazle hover a una región para ver demanda; cambia la carrera a la derecha.</p>
+        <h2>
+          Dónde está el trabajo
+          <br />
+          para cada carrera.
+        </h2>
+        <p className="section-lede">
+          Interactivo. Hazle hover a una región para ver demanda; cambia la carrera a la derecha.
+        </p>
       </div>
 
       <div className="match-map">
@@ -38,7 +54,7 @@ export function MapFull() {
             highlights={hls}
             activeRegion={hoverReg ?? activeRegion}
             onHover={setHoverReg}
-            onSelect={(id) => setActiveRegion((prev) => prev === id ? null : id)}
+            onSelect={(id) => setActiveRegion((prev) => (prev === id ? null : id))}
             height={520}
           />
           <div className="map-footer">
@@ -48,7 +64,11 @@ export function MapFull() {
                 : `Demanda por región · ${current.nombre}`}
             </span>
             {!activeRegion && (
-              <button type="button" className="btn sm" onClick={() => navigate(`/detalle/${current.slug}`)}>
+              <button
+                type="button"
+                className="btn sm"
+                onClick={() => navigate(`/detalle/${current.slug}`)}
+              >
                 Ver detalle →
               </button>
             )}
@@ -59,9 +79,10 @@ export function MapFull() {
             <>
               <h4 className="map-legend-title">Top en {activeRegion}</h4>
               {[...ranked]
-                .sort((a, b) =>
-                  (b.demandaPorRegion[activeRegion as keyof typeof b.demandaPorRegion] ?? 0) -
-                  (a.demandaPorRegion[activeRegion as keyof typeof a.demandaPorRegion] ?? 0)
+                .sort(
+                  (a, b) =>
+                    (b.demandaPorRegion[activeRegion as keyof typeof b.demandaPorRegion] ?? 0) -
+                    (a.demandaPorRegion[activeRegion as keyof typeof a.demandaPorRegion] ?? 0)
                 )
                 .slice(0, 8)
                 .map((c) => (
@@ -75,7 +96,9 @@ export function MapFull() {
                       <div className="t">{c.nombre}</div>
                       <div className="map-legend-sub">{c.tipo}</div>
                     </div>
-                    <span className="n">{c.demandaPorRegion[activeRegion as keyof typeof c.demandaPorRegion] ?? 0}</span>
+                    <span className="n">
+                      {c.demandaPorRegion[activeRegion as keyof typeof c.demandaPorRegion] ?? 0}
+                    </span>
                   </div>
                 ))}
             </>

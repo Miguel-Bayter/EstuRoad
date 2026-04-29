@@ -3,12 +3,12 @@ import type { Carrera, DemandaPorRegion, Universidad } from '../types';
 // --- Raw API types (new Vercel API) ---
 
 interface ApiDemandaPorRegion {
-  'Bogotá'?: number;
-  'Antioquia'?: number;
+  Bogotá?: number;
+  Antioquia?: number;
   'Valle del Cauca'?: number;
-  'Atlántico'?: number;
-  'Santander'?: number;
-  'Cundinamarca'?: number;
+  Atlántico?: number;
+  Santander?: number;
+  Cundinamarca?: number;
   [key: string]: number | undefined;
 }
 
@@ -38,69 +38,81 @@ export interface ApiCarrera {
 // --- Lookup tables ---
 
 const RIASEC_BY_CATEGORIA: Record<string, string[]> = {
-  'Ingeniería y afines':           ['I', 'R', 'C'],
-  'Ciencias de la salud':          ['I', 'S', 'R'],
-  'Ciencias sociales y humanas':   ['S', 'A', 'I'],
-  'Economía y administración':     ['E', 'C', 'I'],
-  'Bellas artes':                  ['A', 'R', 'I'],
-  'Derecho y ciencias políticas':  ['E', 'S', 'C'],
-  'Ciencias de la educación':      ['S', 'A', 'I'],
+  'Ingeniería y afines': ['I', 'R', 'C'],
+  'Ciencias de la salud': ['I', 'S', 'R'],
+  'Ciencias sociales y humanas': ['S', 'A', 'I'],
+  'Economía y administración': ['E', 'C', 'I'],
+  'Bellas artes': ['A', 'R', 'I'],
+  'Derecho y ciencias políticas': ['E', 'S', 'C'],
+  'Ciencias de la educación': ['S', 'A', 'I'],
   'Matemáticas y ciencias naturales': ['I', 'R', 'C'],
-  'Agronomía y veterinaria':       ['R', 'I', 'S'],
+  'Agronomía y veterinaria': ['R', 'I', 'S'],
 };
 
 const INTERESES_BY_CATEGORIA: Record<string, string[]> = {
-  'Ciencias de la salud':          ['salud'],
-  'Ciencias sociales y humanas':   ['social'],
-  'Economía y administración':     ['negocios'],
-  'Bellas artes':                  ['arte'],
-  'Derecho y ciencias políticas':  ['justicia'],
-  'Ciencias de la educación':      ['educacion'],
+  'Ciencias de la salud': ['salud'],
+  'Ciencias sociales y humanas': ['social'],
+  'Economía y administración': ['negocios'],
+  'Bellas artes': ['arte'],
+  'Derecho y ciencias políticas': ['justicia'],
+  'Ciencias de la educación': ['educacion'],
   'Matemáticas y ciencias naturales': ['ingenieria'],
-  'Agronomía y veterinaria':       ['agro'],
+  'Agronomía y veterinaria': ['agro'],
 };
 
 const CITY_BY_UNIVERSITY: Record<string, string> = {
-  'Universidad Nacional de Colombia':              'Bogotá',
-  'Universidad de los Andes':                      'Bogotá',
-  'Pontificia Universidad Javeriana':              'Bogotá',
-  'Universidad Externado de Colombia':             'Bogotá',
-  'Universidad del Rosario':                       'Bogotá',
-  'Universidad de la Sabana':                      'Bogotá',
-  'Universidad El Bosque':                         'Bogotá',
-  'Universidad Jorge Tadeo Lozano':                'Bogotá',
-  'Universidad Santo Tomás':                       'Bogotá',
-  'Universidad Libre':                             'Bogotá',
+  'Universidad Nacional de Colombia': 'Bogotá',
+  'Universidad de los Andes': 'Bogotá',
+  'Pontificia Universidad Javeriana': 'Bogotá',
+  'Universidad Externado de Colombia': 'Bogotá',
+  'Universidad del Rosario': 'Bogotá',
+  'Universidad de la Sabana': 'Bogotá',
+  'Universidad El Bosque': 'Bogotá',
+  'Universidad Jorge Tadeo Lozano': 'Bogotá',
+  'Universidad Santo Tomás': 'Bogotá',
+  'Universidad Libre': 'Bogotá',
   'Universidad Distrital Francisco José de Caldas': 'Bogotá',
-  'Uniminuto':                                     'Bogotá',
-  'Universidad Cooperativa de Colombia':           'Bogotá',
-  'Universidad Pedagógica Nacional':               'Bogotá',
-  'CESAS':                                         'Bogotá',
-  'Universidad EAFIT':                             'Medellín',
-  'Universidad de Antioquia':                      'Medellín',
-  'Politecnico Colombiano Jaime Isaza Cadavid':    'Medellín',
+  Uniminuto: 'Bogotá',
+  'Universidad Cooperativa de Colombia': 'Bogotá',
+  'Universidad Pedagógica Nacional': 'Bogotá',
+  CESAS: 'Bogotá',
+  'Universidad EAFIT': 'Medellín',
+  'Universidad de Antioquia': 'Medellín',
+  'Politecnico Colombiano Jaime Isaza Cadavid': 'Medellín',
   'Institución Universitaria Digital de Antioquia': 'Medellín',
-  'Universidad EIA':                               'Medellín',
-  'Universidad CES':                               'Medellín',
-  'Universidad del Norte':                         'Barranquilla',
-  'Universidad del Valle':                         'Cali',
-  'Universidad Santiago de Cali':                  'Cali',
-  'Universidad Industrial de Santander':           'Bucaramanga',
-  'Universidad de Caldas':                         'Manizales',
-  'Universidad de Manizales':                      'Manizales',
-  'Universidad del Tolima':                        'Ibagué',
-  'Universidad de Nariño':                         'Pasto',
-  'Universidad de Cartagena':                      'Cartagena',
-  'Universidad de Córdoba':                        'Montería',
+  'Universidad EIA': 'Medellín',
+  'Universidad CES': 'Medellín',
+  'Universidad del Norte': 'Barranquilla',
+  'Universidad del Valle': 'Cali',
+  'Universidad Santiago de Cali': 'Cali',
+  'Universidad Industrial de Santander': 'Bucaramanga',
+  'Universidad de Caldas': 'Manizales',
+  'Universidad de Manizales': 'Manizales',
+  'Universidad del Tolima': 'Ibagué',
+  'Universidad de Nariño': 'Pasto',
+  'Universidad de Cartagena': 'Cartagena',
+  'Universidad de Córdoba': 'Montería',
   'Universidad Pedagógica y Tecnológica de Colombia': 'Tunja',
-  'SENA':                                          'Nacional',
+  SENA: 'Nacional',
 };
 
 const PUBLIC_KEYWORDS = [
-  'Nacional', 'Distrital', 'de Antioquia', 'del Valle', 'de Córdoba',
-  'de Nariño', 'Pedagógica', 'Industrial de Santander', 'SENA',
-  'del Atlántico', 'de Caldas', 'del Tolima', 'de Cartagena',
-  'Tecnológica de Pereira', 'Surcolombiana', 'Pedagógica y Tecnológica',
+  'Nacional',
+  'Distrital',
+  'de Antioquia',
+  'del Valle',
+  'de Córdoba',
+  'de Nariño',
+  'Pedagógica',
+  'Industrial de Santander',
+  'SENA',
+  'del Atlántico',
+  'de Caldas',
+  'del Tolima',
+  'de Cartagena',
+  'Tecnológica de Pereira',
+  'Surcolombiana',
+  'Pedagógica y Tecnológica',
 ];
 
 // --- Helper functions ---
@@ -133,7 +145,8 @@ function deriveIntereses(categoria: string, tags: string[]): string[] {
 
   if (categoria.includes('Ingeniería') && result.length === 0) {
     const tagStr = tags.join(' ').toLowerCase();
-    if (/tecnolog|software|datos|ia|programación|web|móvil|machine/.test(tagStr)) result.push('tech');
+    if (/tecnolog|software|datos|ia|programación|web|móvil|machine/.test(tagStr))
+      result.push('tech');
     if (/ambiente|sostenib|agua|residuos|climático/.test(tagStr)) result.push('ambiente');
     if (/salud|médic|biomed/.test(tagStr)) result.push('salud');
     if (result.length === 0) result.push('ingenieria');
@@ -166,17 +179,15 @@ function mapToMacroregiones(d: ApiDemandaPorRegion): DemandaPorRegion {
   const pacifico = d['Valle del Cauca'] ?? 50;
   // Orinoquía/Amazonía/Insular estimated from andina proportion
   const orinoquia = Math.round(andina * 0.52);
-  const amazonia  = Math.round(andina * 0.38);
-  const insular   = Math.round(andina * 0.32);
+  const amazonia = Math.round(andina * 0.38);
+  const insular = Math.round(andina * 0.32);
 
   return { andina, caribe, pacifico, orinoquia, amazonia, insular };
 }
 
 function deriveRegionesDemanda(d: ApiDemandaPorRegion): string[] {
   const mapped = mapToMacroregiones(d);
-  return (Object.entries(mapped) as [string, number][])
-    .filter(([, v]) => v >= 70)
-    .map(([k]) => k);
+  return (Object.entries(mapped) as [string, number][]).filter(([, v]) => v >= 70).map(([k]) => k);
 }
 
 function buildUniversidades(names: string[], costoSemestre: number): Universidad[] {
@@ -194,8 +205,9 @@ function buildUniversidades(names: string[], costoSemestre: number): Universidad
 }
 
 function buildStayVsLeave(raw: ApiCarrera): { stay: string; leave: string } {
-  const regionVals = Object.entries(raw.demandaPorRegion ?? {})
-    .filter((e): e is [string, number] => typeof e[1] === 'number');
+  const regionVals = Object.entries(raw.demandaPorRegion ?? {}).filter(
+    (e): e is [string, number] => typeof e[1] === 'number'
+  );
   const topCity = regionVals.sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'Bogotá';
   const topScore = regionVals[0]?.[1] ?? 75;
   const habs = (raw.habilidadesRequeridas ?? []).slice(0, 2);
@@ -251,7 +263,9 @@ export function adaptCarrera(raw: ApiCarrera): Carrera {
     // Extended fields
     salarioMediana: raw.salarioMediana,
     tasaEmpleabilidad12m: raw.tasaEmpleabilidad12m,
-    habilidadesRequeridas: Array.isArray(raw.habilidadesRequeridas) ? raw.habilidadesRequeridas : [],
+    habilidadesRequeridas: Array.isArray(raw.habilidadesRequeridas)
+      ? raw.habilidadesRequeridas
+      : [],
     tags,
     acreditadaAltaCalidad: raw.acreditadaAltaCalidad ?? false,
     cineCode: raw.cineCode,

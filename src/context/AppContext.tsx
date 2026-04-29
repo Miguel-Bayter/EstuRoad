@@ -17,6 +17,8 @@ interface AppContextValue {
   setTypeChoice: (t: TypeChoice) => void;
   viewChoice: ViewChoice;
   setViewChoice: (v: ViewChoice) => void;
+  isDemo: boolean;
+  setIsDemo: (v: boolean) => void;
   user: AuthUser | null;
   login: (user: AuthUser) => void;
   logout: () => void;
@@ -42,6 +44,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
   const [typeChoice, setTypeChoice] = useState<TypeChoice>('fraunces-geist');
   const [viewChoice, setViewChoice] = useState<ViewChoice>('list');
+  const [isDemo, setIsDemo] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(() =>
     loadStorage<AuthUser | null>('er.user', null)
   );
@@ -49,10 +52,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     loadStorage<string[]>('er.favorites', [])
   );
 
-  const setProfile = useCallback(
-    (p: Perfil | ((prev: Perfil) => Perfil)) => setProfileRaw(p),
-    []
-  );
+  const setProfile = useCallback((p: Perfil | ((prev: Perfil) => Perfil)) => setProfileRaw(p), []);
   const login = useCallback((u: AuthUser) => setUser(u), []);
   const logout = useCallback(() => setUser(null), []);
   const toggleFavorite = useCallback((slug: string) => {
@@ -86,6 +86,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setTypeChoice,
       viewChoice,
       setViewChoice,
+      isDemo,
+      setIsDemo,
       user,
       login,
       logout,
@@ -93,12 +95,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
       toggleFavorite,
       isFavorite,
     }),
-    [profile, setProfile, typeChoice, viewChoice, user, login, logout, favorites, toggleFavorite, isFavorite]
+    [
+      profile,
+      setProfile,
+      typeChoice,
+      viewChoice,
+      isDemo,
+      user,
+      login,
+      logout,
+      favorites,
+      toggleFavorite,
+      isFavorite,
+    ]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useApp() {
   const ctx = useContext(AppContext);
   if (!ctx) throw new Error('useApp must be used inside AppProvider');
