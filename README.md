@@ -28,13 +28,57 @@ EstuRoad ayuda a estudiantes a descubrir qué estudiar considerando su contexto 
 | Frontend | React 19 + TypeScript 6 + Vite 8 |
 | Routing | React Router 7 |
 | Styles | CSS custom properties (zero UI libraries) |
-| Backend | Express 4 + MongoDB 7 + Mongoose 8 |
+| Data API | EduRoad API (custom-built, Express + MongoDB, Vercel) |
+| Profiles API | Express 4 + MongoDB 7 + Mongoose 8 |
 | Auth | httpOnly session cookie (HMAC) |
 | Validation | Joi (server) |
 | Tests | Vitest 4 (unit) + Playwright 1.59 (E2E) |
 | CI | GitHub Actions |
-| Deploy | Vercel (frontend + API) |
+| Deploy | Vercel (frontend + APIs) |
 | Fonts | Fraunces (display) + Geist (UI) + Geist Mono |
+
+---
+
+## EduRoad API
+
+The career data is served by a separate REST API also built by the same author — **[eduroad-api.vercel.app](https://eduroad-api.vercel.app/api/docs)**.
+
+> **API Docs (Swagger UI):** [eduroad-api.vercel.app/api/docs](https://eduroad-api.vercel.app/api/docs)
+
+### Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/carreras` | Paginated list of careers (`?limit=` `&page=`) |
+| `GET` | `/api/carreras/:slug` | Single career by slug |
+
+### Career object (23 fields)
+
+```json
+{
+  "nombre": "Ingeniería Civil",
+  "slug": "ingenieria-civil",
+  "tipo": "universitaria",
+  "categoria": "Ingeniería",
+  "duracionSemestres": 10,
+  "costoSemestre": 4200000,
+  "salarioEntrada": 2200000,
+  "salarioMedio": 3800000,
+  "salarioMediana": 3500000,
+  "empleabilidad": 82.0,
+  "tasaEmpleabilidad12m": 78.0,
+  "proyeccion2030": "Alta. Infraestructura vial...",
+  "acreditadaAltaCalidad": true,
+  "demandaPorRegion": { "Bogotá": 88, "Antioquia": 82, "... " : "..." },
+  "universidades": ["Universidad Nacional", "..."],
+  "habilidadesRequeridas": ["Matemáticas", "..."],
+  "tags": ["infraestructura", "..."],
+  "cineCode": "0732",
+  "ultimaActualizacion": "2026-04-21T00:00:00"
+}
+```
+
+Data sourced from **SNIES** (Sistema Nacional de Información de la Educación Superior) and **OLE** (Observatorio Laboral para la Educación) — Colombia's official higher education and labor market registries. 300+ careers, updated 2026.
 
 ---
 
