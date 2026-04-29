@@ -1,12 +1,26 @@
 import { adaptCarrera, type ApiCarrera } from './adapters';
 import type { Carrera, Perfil, AuthUser } from '../types';
 
-// In dev, Vite proxies /api → eduroad-api.vercel.app
-// In prod, set VITE_API_URL=https://eduroad-api.vercel.app/api
-const BASE = import.meta.env.VITE_API_URL ?? '/api';
+// Public carreras data — external Vercel API, no auth needed
+const CARRERAS_BASE = import.meta.env.VITE_API_URL ?? 'https://eduroad-api.vercel.app/api';
+
+// User profiles — own backend (proxied via /api in dev and prod)
+const PERFILES_BASE = '/api';
+
+async function publicRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${CARRERAS_BASE}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...init,
+    signal: init?.signal ?? AbortSignal.timeout(10_000),
+  });
+
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error ?? body.message ?? `HTTP ${res.status}`);
+  return body as T;
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(`${PERFILES_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     ...init,
@@ -25,18 +39,18 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 // --- Carreras ---
 export const carrerasApi = {
   list: async (): Promise<Carrera[]> => {
-    const data = await request<{ items: ApiCarrera[] }>('/carreras/?limit=100');
+    const data = await publicRequest<{ items: ApiCarrera[] }>('/carreras/?limit=100');
     return data.items.map(adaptCarrera);
   },
 
   get: async (slug: string): Promise<Carrera> => {
-    const raw = await request<ApiCarrera>(`/carreras/${slug}`);
+    const raw = await publicRequest<ApiCarrera>(`/carreras/${slug}`);
     return adaptCarrera(raw);
   },
 
   recomendaciones: async (_perfil: Omit<Perfil, '_id'>): Promise<Carrera[]> => {
     // Scoring is done client-side via scoreCarrera(); fetch full list
-    const data = await request<{ items: ApiCarrera[] }>('/carreras/?limit=100');
+    const data = await publicRequest<{ items: ApiCarrera[] }>('/carreras/?limit=100');
     return data.items.map(adaptCarrera);
   },
 };
