@@ -77,19 +77,20 @@ async function main() {
   await page.locator('button[title="Personalizar apariencia"]').click(); // close
   await shot(page, '05-results-cards');
 
-  // 5. Detail page
+  // 5. Detail page — wait for hero content to be fully rendered
   await page.locator('.match-card').first().click();
   await page.waitForURL('**/detalle/**', { timeout: 10_000 });
+  await page.locator('.detail-hero').waitFor({ state: 'visible', timeout: 15_000 });
   await shot(page, '06-detail');
 
-  // 6. Compare
+  // 6. Compare — wait for compare table (auto-populates with top 3)
   await page.goto(`${BASE}/comparar`);
-  await page.waitForLoadState('domcontentloaded');
+  await page.locator('.compare').waitFor({ state: 'visible', timeout: 20_000 });
   await shot(page, '07-compare');
 
-  // 7. Map full
+  // 7. Map full — wait for SVG map to render
   await page.goto(`${BASE}/mapa`);
-  await page.waitForLoadState('domcontentloaded');
+  await page.locator('svg').first().waitFor({ state: 'visible', timeout: 15_000 });
   await shot(page, '08-map');
 
   await browser.close();
