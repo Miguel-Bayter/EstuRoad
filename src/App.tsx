@@ -20,7 +20,7 @@ function AppShell() {
       <header role="banner">
         <Nav />
       </header>
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         <ErrorBoundary>
           <Routes>
             <Route path="/" element={<Landing />} />

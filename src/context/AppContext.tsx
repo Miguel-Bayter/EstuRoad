@@ -41,7 +41,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     loadStorage<Perfil>('er.profile', DEFAULT_PERFIL as Perfil)
   );
   const [typeChoice, setTypeChoice] = useState<TypeChoice>('fraunces-geist');
-  const [viewChoice, setViewChoice] = useState<ViewChoice>('cards');
+  const [viewChoice, setViewChoice] = useState<ViewChoice>('list');
   const [user, setUser] = useState<AuthUser | null>(() =>
     loadStorage<AuthUser | null>('er.user', null)
   );
