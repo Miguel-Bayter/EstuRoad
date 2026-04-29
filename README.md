@@ -10,13 +10,14 @@ EstuRoad ayuda a estudiantes a descubrir qué estudiar considerando su contexto 
 
 ## Screenshots
 
-| Landing | Resultados |
-|---------|-----------|
-| ![Landing](public/screenshots/01-landing.png) | ![Results](public/screenshots/04-results-list.png) |
-
-| Detalle de carrera | Comparador |
-|-------------------|-----------|
-| ![Detail](public/screenshots/06-detail.png) | ![Compare](public/screenshots/07-compare.png) |
+<p align="center">
+  <img src="public/screenshots/01-landing.png" width="49%" alt="Landing" />
+  <img src="public/screenshots/04-results-list.png" width="49%" alt="Resultados" />
+</p>
+<p align="center">
+  <img src="public/screenshots/06-detail.png" width="49%" alt="Detalle de carrera" />
+  <img src="public/screenshots/07-compare.png" width="49%" alt="Comparador" />
+</p>
 
 ---
 
